@@ -56,19 +56,21 @@ class Server:
 		if self.is_debug: print("		turn off server #", self.ID)
 
 	def deploy(self):
-		self.is_deployed = True
-		self.to_be_turned_on = False
-		self.to_be_turned_off = False
-		self.is_busy = False
-		if self.is_debug: print("		deployed server #", self.ID)
-
-	def undeploy(self):
-		if self.is_busy and self.is_deployed and self.to_be_turned_off:
-			self.is_deployed = False
+		if not self.is_deployed and self.to_be_turned_on:
+			self.is_deployed = True
 			self.to_be_turned_on = False
 			self.to_be_turned_off = False
 			self.is_busy = False
-			if self.is_debug: print("		undeployed server #", self.ID)
+			if self.is_debug: print("		deployed server #", self.ID)
+
+	def unload_and_undeploy(self):
+		if self.is_busy and self.is_deployed and self.to_be_turned_off:
+			if self.is_debug: print("		unload & undeploy server #", self.ID)
+			self.is_busy = False
+			self.is_deployed = False
+			self.to_be_turned_on = False
+			self.to_be_turned_off = False
+			return self.served_request			
 
 	def get_info(self):
 		if self.is_debug:

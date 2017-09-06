@@ -74,6 +74,10 @@ class Simulation:
 
 		self.time = t
 
+		# if self.system_state == States.TURN_OFF:
+		# 	for server in self.servers:
+		# 		self.servers[server.ID].to_be_turned_on = False
+
 	def get_free_deployed_server(self):
 		free_server = False
 		for server in self.servers:
@@ -121,7 +125,7 @@ class Simulation:
 		served_server = Server(-1, True, False)
 		served_server.turn_on_time = self.simulation_time + 1
 		for server in self.servers:		
-			if server.to_be_turned_on and server.to_be_turned_on and server.turn_on_time < served_server.turn_on_time:
+			if server.to_be_turned_on and server.turn_on_time < served_server.turn_on_time:
 				served_server = server
 		return served_server
 
@@ -129,6 +133,8 @@ class Simulation:
 		result = []
 		# sort servers by departure time
 		self.servers.sort(key=lambda x: x.departure_time)
+		for i in range(0, len(self.servers)-1):
+			self.servers[i].ID = i
 		# turn off c(t)-c0 served deployed servers
 		turned_off_servers = 0
 		for server in self.servers:
@@ -160,14 +166,13 @@ class Simulation:
 
 	def turn_off_servers(self):
 		servers_to_turn_off = self.get_servers_to_turn_off()
-		for server in servers_to_turn_off:
+		for server in self.servers:
 			self.servers[server.ID].turn_off()
-		# to_be_turned_off = true and time = departure time, serve request and undeploy server
 		for server in servers_to_turn_off:
 			if server.departure_time == self.time and server.is_busy and server.is_deployed and server.to_be_turned_off:
-				served_request = self.servers[server.ID].unload()
+				served_request = self.servers[server.ID].unload_and_undeploy()
 				self.served_requests.append(served_request)
-				self.servers[server.ID].undeploy()
+		for server in self.servers:
 			if server.departure_time == self.time and server.is_busy and server.is_deployed and not server.to_be_turned_off:
 				served_request = self.servers[server.ID].unload()
 				self.served_requests.append(served_request)				
@@ -251,12 +256,12 @@ class Simulation:
 					  self.servers_count, " total servers, ",
 					  self.flow.generated_count, " generated, ",
 					  len(self.served_requests), " served")
-
-			self.update_time()
 	
 			if self.is_debug:
 				for server in self.servers:
 					server.get_info()
+
+			self.update_time()
 
 			if self.is_debug and not auto_continue:
 				user_input  = input("Press Enter to for next step, or input 'True' to turn on auto continue mode: ")
