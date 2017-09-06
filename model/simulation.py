@@ -22,9 +22,9 @@ class Simulation:
 		self.simulation_time = simulation_time
 		self.is_debug = is_debug
 		self.time = 0
-		self.flow = Flow(lambd, mu)
+		self.flow = Flow(lambd, mu, is_debug)
 		self.generated_request = Request(-1, 0, 0, 0)
-		self.queue = Queue(max_queue_size)
+		self.queue = Queue(max_queue_size, is_debug)
 		self.system_state = States.IDLE
 		self.servers = []
 		self.served_requests = []
@@ -60,12 +60,19 @@ class Simulation:
 		next_serve_time = self.simulation_time + 1 if first_served_server.ID == -1 else first_served_server.departure_time
 		next_turn_time = self.simulation_time + 1 if first_turned_server.ID == -1 else first_turned_server.turn_on_time
 
+		t = min([next_arrive_time, next_serve_time, next_turn_time])
 		if self.is_debug:
-			print("	next arrive = ", first_generated_request.arrival_time, ", ",
-				  "next serve = ", "never" if next_serve_time == self.simulation_time + 1 else next_serve_time, ", ",
-				  "next turn up time = ", "never" if next_turn_time == self.simulation_time + 1 else next_turn_time)
+			t0 = "%.3f"%first_generated_request.arrival_time
+			t1 = "never" if next_serve_time == self.simulation_time + 1 else "%.3f"%next_serve_time
+			t2 = "never" if next_turn_time == self.simulation_time + 1 else "%.3f"%next_turn_time
+			if t == next_arrive_time: event = "ARRIVE"
+			if t == next_serve_time: event = "SERVE"
+			if t == next_turn_time: event = "TURN"
+			print("	next event=", event, ", arrive= ", t0, ", ",
+				  "serve= ", t1, "(#", first_served_server.ID, "),"
+				  "turn up= ", t2, "(#", first_turned_server.ID, ")")
 
-		self.time = min([next_arrive_time, next_serve_time, next_turn_time])
+		self.time = t
 
 	def get_free_deployed_server(self):
 		free_server = False
@@ -73,28 +80,6 @@ class Simulation:
 			if not server.is_busy and server.is_deployed and not server.to_be_turned_off:
 				return server
 		return free_server
-
-	def is_all_servers_free(self):
-		result = True
-		for server in self.servers:
-			if server.is_busy and server.is_deployed:
-				return False
-		return True
-
-	def get_busy_server_with_min_serving_time(self):
-		busy_server = Server(-1, True)
-		for server in self.servers:
-			if server.is_busy and server.is_deployed and busy_server.ID == -1:
-				busy_server = server
-			if server.is_busy and server.is_deployed and server.departure_time < busy_server.departure_time:
-				busy_server = server
-		return busy_server
-
-	def is_all_servers_busy(self):
-		for server in self.servers:
-			if not server.is_busy and server.is_deployed:
-				return True
-		return False
 
 	def get_free_deployed_servers_count(self):
 		count = 0
@@ -125,21 +110,33 @@ class Simulation:
 		return generated_request
 
 	def get_first_served_server(self):
-		served_server = Server(-1, True, self.is_debug)
+		served_server = Server(-1, True, False)
 		served_server.departure_time = self.simulation_time + 1
 		for server in self.servers:
-			if server.is_busy:
-				if server.is_deployed and server.departure_time < served_server.departure_time:
-					served_server = server
+			if server.is_busy and server.is_deployed and server.departure_time < served_server.departure_time:
+				served_server = server
 		return served_server
 
 	def get_first_turned_server(self):
-		served_server = Server(-1, True, self.is_debug)
+		served_server = Server(-1, True, False)
 		served_server.turn_on_time = self.simulation_time + 1
 		for server in self.servers:		
 			if server.to_be_turned_on and server.to_be_turned_on and server.turn_on_time < served_server.turn_on_time:
 				served_server = server
 		return served_server
+
+	def get_servers_to_turn_off(self):
+		result = []
+		# sort servers by departure time
+		self.servers.sort(key=lambda x: x.departure_time)
+		# turn off c(t)-c0 served deployed servers
+		turned_off_servers = 0
+		for server in self.servers:
+			if turned_off_servers < self.get_deployed_servers_count() - self.core_servers_count and server.is_deployed:
+				turned_off_servers += 1
+				result.append(server)
+		return result
+
 
 	def pop_generated_request(self, request):
 		request_id = 0;
@@ -152,43 +149,53 @@ class Simulation:
 	def has_turned_servers(self):
 		return True if len(self.servers) > self.core_servers_count else False
 
-	def handle_idle_mode(self):
-		self.handle_event()
-
-	def handle_turn_on_mode(self):
+	def turn_on_servers(self):
 		# start turning up servers
 		for server in self.servers:
-			if not server.is_deployed and not server.to_be_turned_on:
-				self.servers[server.ID].turn_on(self.time, self.theta)
+			self.servers[server.ID].turn_on(self.time, self.theta)
 		# time = turn up server, change server state to deployed
 		for server in self.servers:
-			if server.turn_on_time == self.time and not server.is_deployed:
-				self.servers[server.ID].is_deployed = True
-				self.servers[server.ID].to_be_turned_on = False
-				self.servers[server.ID].is_busy = False
-				if self.is_debug: 
-					print("		turn up server #", server.ID)
-					print("	Server turned up")			
-		self.handle_event()		
+			if server.turn_on_time == self.time:
+				self.servers[server.ID].deploy()
 
-	# TODO: fix bug
+	def turn_off_servers(self):
+		servers_to_turn_off = self.get_servers_to_turn_off()
+		for server in servers_to_turn_off:
+			self.servers[server.ID].turn_off()
+		# to_be_turned_off = true and time = departure time, serve request and undeploy server
+		for server in servers_to_turn_off:
+			if server.departure_time == self.time and server.is_busy and server.is_deployed and server.to_be_turned_off:
+				served_request = self.servers[server.ID].unload()
+				self.served_requests.append(served_request)
+				self.servers[server.ID].undeploy()
+			if server.departure_time == self.time and server.is_busy and server.is_deployed and not server.to_be_turned_off:
+				served_request = self.servers[server.ID].unload()
+				self.served_requests.append(served_request)				
+
+	def handle_idle_mode(self):
+		self.serve_request()
+		self.handle_request()
+		self.handle_queue()
+
+	def handle_turn_on_mode(self):
+		self.turn_on_servers()
+		self.serve_request()
+		self.handle_request()
+		self.handle_queue()				
+
 	def handle_turn_off_mode(self):
-		# start turning off servers
-		for server in self.servers:
-			if server.is_deployed and self.get_deployed_servers_count() > self.core_servers_count:
-				if server.is_busy:
-					self.servers[server.ID].to_be_turned_off = True
-				else:
-					self.servers[server.ID].turn_off()		
-		self.handle_event()
+		self.turn_off_servers()		
+		self.handle_request()
+		self.handle_queue()
 
-	def handle_event(self):
+	def serve_request(self):
 		# time = departure time, serve request
 		for server in self.servers:
 			if server.departure_time == self.time and server.is_busy and server.is_deployed:
 				served_request = self.servers[server.ID].unload()
 				self.served_requests.append(served_request)
-				if self.is_debug: print("	Request served")
+
+	def handle_request(self):
 		# time = new request arrive, handle request
 		first_generated_request = self.get_first_arrived_generated_request()
 		if first_generated_request.arrival_time == self.time:
@@ -199,7 +206,8 @@ class Simulation:
 			self.pop_generated_request(first_generated_request)
 			self.generated_request = self.flow.generate()
 			self.generated_requests.append(self.generated_request)
-			if self.is_debug: print("	Request generated")
+						
+	def handle_queue(self):
 		# handle queue at current time
 		for request in self.queue.requests:
 			if self.get_free_deployed_servers_count() > 0:
@@ -238,11 +246,17 @@ class Simulation:
 				print("	System in ", self.system_state)
 				print("	Queue size = ", len(self.queue.requests), ", ", 
 					  "blocked = ", self.queue.blocked, ", ",
-					  self.get_busy_deployed_servers_count(), "/", self.get_deployed_servers_count(), " servers are busy, ",
-					  self.flow.generated_count, " requests generated, ",
-					  len(self.served_requests), " served requests")
+					  self.get_busy_deployed_servers_count(), "/", self.get_deployed_servers_count(), " busy, ",
+					  self.get_free_deployed_servers_count(), "/", self.get_deployed_servers_count(), " free, ",
+					  self.servers_count, " total servers, ",
+					  self.flow.generated_count, " generated, ",
+					  len(self.served_requests), " served")
 
 			self.update_time()
+	
+			if self.is_debug:
+				for server in self.servers:
+					server.get_info()
 
 			if self.is_debug and not auto_continue:
 				user_input  = input("Press Enter to for next step, or input 'True' to turn on auto continue mode: ")
