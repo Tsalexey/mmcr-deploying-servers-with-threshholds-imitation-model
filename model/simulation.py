@@ -30,26 +30,27 @@ class Simulation:
 		self.served_requests = []
 		self.generated_requests = []
 		for i in range(servers_count):
-			self.servers.append(Server(i, True if i < core_servers_count else False, is_debug))
+			self.servers.append(Server(i, True if i <= core_servers_count else False, is_debug))
 
 	def get_system_state(self):
-		if self.system_state == States.IDLE:
-			if len(self.queue.requests) >= self.H:
-				return States.TURN_UP
-			else:
-				return States.IDLE
-		elif self.system_state == States.TURN_UP:
-			if len(self.queue.requests) <= self.L:
-				return States.TURN_OFF
-			else:
-				return States.TURN_UP
-		elif self.system_state == States.TURN_OFF:
-			if  len(self.queue.requests) >= self.H:
-				return States.TURN_UP
-			elif not self.has_turned_servers():
-				return States.IDLE
-			else:
-				return States.TURN_OFF
+		return States.IDLE
+		# if self.system_state == States.IDLE:
+		# 	if len(self.queue.requests) >= self.H:
+		# 		return States.TURN_UP
+		# 	else:
+		# 		return States.IDLE
+		# elif self.system_state == States.TURN_UP:
+		# 	if len(self.queue.requests) <= self.L:
+		# 		return States.TURN_OFF
+		# 	else:
+		# 		return States.TURN_UP
+		# elif self.system_state == States.TURN_OFF:
+		# 	if  len(self.queue.requests) >= self.H:
+		# 		return States.TURN_UP
+		# 	elif not self.has_turned_servers():
+		# 		return States.IDLE
+		# 	else:
+		# 		return States.TURN_OFF
 	
 	def update_time(self):
 		first_generated_request = self.get_first_arrived_generated_request()
@@ -73,10 +74,6 @@ class Simulation:
 				  "turn up= ", t2, "(#", first_turned_server.ID, ")")
 
 		self.time = t
-
-		# if self.system_state == States.TURN_OFF:
-		# 	for server in self.servers:
-		# 		self.servers[server.ID].to_be_turned_on = False
 
 	def get_free_deployed_server(self):
 		free_server = False

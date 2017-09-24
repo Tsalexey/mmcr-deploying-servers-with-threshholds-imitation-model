@@ -11,26 +11,69 @@ from server import Server
 from queue import Queue
 from request import Request
 from flow import Flow
+import time
 
 def main():
-	if len(sys.argv) != 12:
-		print("Input parameters must be: 'filename lambda mu theta C c0 Q L H simulation_time is_debug'")
+	if len(sys.argv) < 12 or len(sys.argv) > 13:
+		print("Input parameters must be: 'filename lambda mu C c0 Q theta L H simulation_time is_debug repeats(optionally)'")
 	else:
+		start_time = time.time()
+
 		file_name = sys.argv[1]
 		lambd = float(sys.argv[2])
 		mu = float(sys.argv[3])
-		theta = float(sys.argv[4])
-		C = int(sys.argv[5])
-		c0 = int(sys.argv[6])
-		Q = int(sys.argv[7])
+		C = int(sys.argv[4])
+		c0 = int(sys.argv[5])
+		Q = int(sys.argv[6])
+		theta = float(sys.argv[7])
 		L = int(sys.argv[8])
 		H = int(sys.argv[9])
 		simulation_time = float(sys.argv[10]);
 		is_debug = True if sys.argv[11] == "True" else False;
+		repeats = int(sys.argv[12]) if len(sys.argv) == 13 else 1;
+
+		print("Simulation started for params: lambda =", lambd, 
+			                                  ", mu =", mu, 
+			                                  ", C =", C, 
+			                                  ", c0 =", c0, 
+			                                  ", Q =", Q, 
+			                                  ", theta =", theta, 
+			                                  ", L =", L, 
+			                                  ", H =", H,
+			                                  ", repeats =", repeats)
+
+		blocked = 0
+		served = 0
+		generated = 0
+		B = 0
+		N = 0
 
 		simulation = Simulation(lambd, mu, theta, C, c0, L, H, simulation_time, Q, is_debug)
-		simulation.start()
+		for i in range(0, repeats):
+			simulation = Simulation(lambd, mu, theta, C, c0, L, H, simulation_time, Q, is_debug)
+			simulation.start()
+			blocked += simulation.queue.blocked
+			served += len(simulation.served_requests)
+			generated += simulation.flow.generated_count	
+			B += simulation.queue.blocked/len(simulation.served_requests)
+			N += len(simulation.served_requests)/simulation_time
+		end_time = time.time()
 
+		blocked = blocked/repeats
+		served = served/repeats
+		generated = generated/repeats
+		B = B/repeats
+		N = N/repeats
+
+		print( "")
+		print( "Summary results:")
+		print( "blocked=", blocked, " served=", served, ", generated=", generated)
+		print("B = ", B)
+		print("N = ", N)
+		print("Execution time = %s seconds" % (end_time - start_time))
+		print( "... to be implemented more summary ...")
+
+		# write statistics to file
 		abs_path = os.path.abspath(__file__)
 		path = os.path.relpath('statistics', abs_path) + "\\" + file_name + '-(%s,%s,%s,%s,%s,%s,%s,%s).csv' % (lambd,mu,theta,C,c0,L,H,simulation_time)
 
@@ -52,10 +95,6 @@ def main():
 			output.writerow(outrow)
 		outfile.close()
 
-		if is_debug:
-			print( "")
-			print( "Summary results:")
-			print( "... to be implemented")
 		return simulation
 
 if __name__ == '__main__':
