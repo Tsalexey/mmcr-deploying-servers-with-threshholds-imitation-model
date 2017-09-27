@@ -13,7 +13,13 @@ from request import Request
 from flow import Flow
 import time
 
+'''
+	This class is designed for one simple Simulation execution
+'''
 def main():
+	'''
+	Main method to launch
+	'''
 	if len(sys.argv) < 12 or len(sys.argv) > 13:
 		print("Input parameters must be: 'filename lambda mu C c0 Q theta L H simulation_time is_debug repeats(optionally)'")
 	else:

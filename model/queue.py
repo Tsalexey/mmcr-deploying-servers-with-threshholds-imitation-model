@@ -3,6 +3,9 @@ __author__ = 'tsarev alexey'
 #													  QUEUE														  	 #
 #--------------------------------------------------------------------------------------------------------------------#
 class Queue:
+	'''
+		This class represents Queue
+	'''
 	def __init__(self, max_size, is_debug):
 		self.max_size = max_size
 		self.blocked = 0
@@ -10,6 +13,9 @@ class Queue:
 		self.is_debug = is_debug
 
 	def push(self, request):
+		'''
+			Push request into queue
+		'''
 		if len(self.requests) == self.max_size:
 			if self.is_debug: print("		push: request blocked")
 			self.blocked += 1
@@ -18,6 +24,9 @@ class Queue:
 			self.requests.append(request)
 
 	def pop(self, request, time):
+		'''
+			Pop request form queue
+		'''
 		if self.is_debug: print("		push: request leaved queue")
 		queued_request_id = 0;
 		for req in self.requests:
