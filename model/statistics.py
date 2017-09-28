@@ -1,12 +1,15 @@
 __author__ = 'tsarev alexey'
 
+import time
+import numpy as np
+
 from enum import Enum
 from simulation import Simulation
 from server import Server
 from queue import Queue
 from request import Request
 from flow import Flow
-import time
+from generated_values_storage import Generated_values_storage
 
 #--------------------------------------------------------------------------------------------------------------------#
 #													  Statistics 												  	 #
@@ -45,16 +48,31 @@ class Statistics:
 		'''
 		generated_values = []
 
+		print("Input parameters has range =", self.has_range, "\n")
 		if self.has_range:
-			for var in range(self.x_range[0], self.x_range[1]):
-				for i in range(1, self.repeats):
+			for var in np.arange(self.input_range[0], self.input_range[1]+1, self.step):
+				start_time = time.time()
+				for i in range(1, int(self.repeats)):
 					generated_values_storage = Generated_values_storage()
-					sim = Simulation(lambd, mu, theta, C, c0, L, H, simulation_time, Q, is_debug)
+					sim = Simulation(self.lambd if self.lambd != -1 else var, 
+									 self.mu if self.mu != -1 else var, 
+									 self.theta if self.theta != -1 else var, 
+									 int(self.C) if self.C != -1 else var, 
+									 int(self.c0) if self.c0 != -1 else var, 		 
+									 int(self.L) if self.L != -1 else var, 
+									 int(self.H) if self.H != -1 else var, 
+									 int(self.simulation_time), 
+									 int(self.Q) if self.Q != -1 else var, 
+									 self.is_debug)
+					sim.start()
 					generated_values_storage.add(sim)
+				end_time = time.time()
+				print("Generated values added to storage for ", self.x_axis, " = ", var, "/", self.input_range[1], ", execution time = %s sec" % (end_time - start_time))
 				generated_values_storage.normalize(self.repeats)
 				generated_values.append(generated_values_storage)
 		else:
 			for i in range(1, self.repeats):
+				print("Repeat #", i)
 				generated_values_storage = Generated_values_storage()
 				sim = Simulation(lambd, mu, theta, C, c0, L, H, simulation_time, Q, is_debug)
 				generated_values_storage.add(sim)

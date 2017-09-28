@@ -18,7 +18,7 @@ class Input_parser:
 			input_list = args[i].split("=")
 			if len(input_list[1].split("-")) == 1:
 				if input_list[1] == "True" or input_list[1] == "False":
-					input_map[input_list[0]] = bool(input_list[1])
+					input_map[input_list[0]] = (True if input_list[1] == "True" else False)
 				else:
 					input_map[input_list[0]] = float(input_list[1])
 			else:

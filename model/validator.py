@@ -38,6 +38,8 @@ class Validator:
 
 		if len(args) < 13 or len(args) > 14:
 			print("Wrong count of parameters!")
+			print("\nInput parameters must be: 'filename step='%' lambda='%' mu='%' C='%' c0='%'",
+			 	  "Q='%' theta='%' L='%' H='%' simulation_time is_debug repeats(optionally)'\n")			
 			return False
 		list_args = [x.split("=") for x in args];
 		if not self.validate_parameters_order([x[0] for x in list_args]):
