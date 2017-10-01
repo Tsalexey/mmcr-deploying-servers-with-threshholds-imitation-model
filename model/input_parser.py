@@ -3,13 +3,13 @@ __author__ = 'tsarev alexey'
 #													   INPUT_PARSER												  	 #
 #--------------------------------------------------------------------------------------------------------------------#
 class Input_parser:
-	'''
+	"""
 	This class is designed to parse input validated by Validator
-	'''
+	"""
 	def parse_input(self, args):
-		'''
+		"""
 		Convert input args list into map
-		'''
+		"""
 		input_map = {}
 		x_axis = ""
 		x_range = list()

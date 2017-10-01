@@ -1,25 +1,19 @@
 __author__ = 'tsarev alexey'
 
-import random
 import csv
 import sys
 import os
 
-from enum import Enum
 from simulation import Simulation
-from server import Server
-from queue import Queue
-from request import Request
-from flow import Flow
 import time
 
 '''
 	This class is designed for one simple Simulation execution
 '''
 def main():
-	'''
+	"""
 	Main method to launch
-	'''
+	"""
 	if len(sys.argv) < 12 or len(sys.argv) > 13:
 		print("Input parameters must be: 'filename lambda mu C c0 Q theta L H simulation_time is_debug repeats(optionally)'")
 	else:
@@ -38,13 +32,13 @@ def main():
 		is_debug = True if sys.argv[11] == "True" else False;
 		repeats = int(sys.argv[12]) if len(sys.argv) == 13 else 1;
 
-		print("Simulation started for params: lambda =", lambd, 
-			                                  ", mu =", mu, 
-			                                  ", C =", C, 
-			                                  ", c0 =", c0, 
-			                                  ", Q =", Q, 
-			                                  ", theta =", theta, 
-			                                  ", L =", L, 
+		print("Simulation started for params: lambda =", lambd,
+			                                  ", mu =", mu,
+			                                  ", C =", C,
+			                                  ", c0 =", c0,
+			                                  ", Q =", Q,
+			                                  ", theta =", theta,
+			                                  ", L =", L,
 			                                  ", H =", H,
 			                                  ", repeats =", repeats)
 
@@ -54,14 +48,14 @@ def main():
 		B = 0
 		N = 0
 
-		simulation = Simulation(lambd, mu, theta, C, c0, L, H, simulation_time, Q, is_debug)
+		simulation = Simulation("extended", lambd, mu, theta, C, c0, L, H, simulation_time, Q, is_debug)
 		for i in range(0, repeats):
-			simulation = Simulation(lambd, mu, theta, C, c0, L, H, simulation_time, Q, is_debug)
+			simulation = Simulation("extended", lambd, mu, theta, C, c0, L, H, simulation_time, Q, is_debug)
 			simulation.start()
 			blocked += simulation.queue.blocked
 			served += len(simulation.served_requests)
-			generated += simulation.flow.generated_count	
-			B += simulation.queue.blocked/len(simulation.served_requests)
+			generated += simulation.flow.generated_count
+			B += simulation.queue.blocked/(len(simulation.served_requests)+simulation.queue.blocked)
 			N += len(simulation.served_requests)/simulation_time
 		end_time = time.time()
 

@@ -1,6 +1,5 @@
 __author__ = 'tsarev alexey'
 
-import random
 import csv
 import sys
 import os
@@ -9,27 +8,30 @@ import time
 from validator import Validator
 from input_parser import Input_parser
 from statistics import Statistics
+from const import Const
 '''
 	This class is designed to collect simulation statistics and write it to file
 '''
 
 def main():
-	'''
-		Main method
-	'''
+	"""
+        Main method
+    """
 	print("")
 	if not Validator().validate_stat_generator(sys.argv):
 		print("Fix problems and try again!\n")
 	else:
 		start_time = time.time()
+		const = Const()
 
 		[x_axis, x_range, input_map] = Input_parser().parse_input(sys.argv)
-		
+
 		print("\nInput parameters:")
 		for key, value in input_map.items():
 			print("		", key, "=", value)
 
-		print("Gathering statistics for ", x_axis, " from ", x_range[0], " to ", x_range[1], " with step ", input_map["step"])
+		print("Gathering statistics for ", x_axis, " from ", x_range[0], " to ", x_range[1], " with step ",
+			  input_map[const.STEP])
 
 		stat = Statistics(x_axis, x_range, input_map)
 		generated_stat = stat.generate()
@@ -42,26 +44,28 @@ def main():
 		end_time = time.time()
 		print("Execution finished. Total execution time = %s seconds" % (end_time - start_time))
 
+
 def write_results(filename, generated_stat, x_axis, x_range, input_map):
-	'''
+	"""
 		Write simulation data to output file
-	'''
+	"""
 	abs_path = os.path.abspath(__file__)
 
-	lamb_parameter = (input_map["lambda"] if x_axis != "lambda" else ('%s-%s'% (x_range[0], x_range[1])))
-	mu_parameter = (input_map["mu"] if x_axis != "mu" else ('%s-%s'% (x_range[0], x_range[1])))
-	theta_parameter = (input_map["theta"] if x_axis != "theta" else ('%s-%s'% (x_range[0], x_range[1])))
-	C_parameter = (input_map["C"] if x_axis != "C" else ('%s-%s'% (x_range[0], x_range[1])))
-	c0_parameter = (input_map["c0"] if x_axis != "c0" else ('%s-%s'% (x_range[0], x_range[1])))
-	L_parameter = (input_map["L"] if x_axis != "L" else ('%s-%s'% (x_range[0], x_range[1])))
-	H_parameter = (input_map["H"] if x_axis != "H" else ('%s-%s'% (x_range[0], x_range[1])))
+	const = Const()
+	lamb_parameter = (input_map[const.LAMBDA] if x_axis != const.LAMBDA else ('%s-%s'% (x_range[0], x_range[1])))
+	mu_parameter = (input_map[const.MU] if x_axis != const.MU else ('%s-%s'% (x_range[0], x_range[1])))
+	theta_parameter = (input_map[const.THETA] if x_axis != const.THETA else ('%s-%s'% (x_range[0], x_range[1])))
+	C_parameter = (input_map[const.C] if x_axis != const.C else ('%s-%s'% (x_range[0], x_range[1])))
+	c0_parameter = (input_map[const.C0] if x_axis != const.C0 else ('%s-%s'% (x_range[0], x_range[1])))
+	L_parameter = (input_map[const.L] if x_axis != const.L else ('%s-%s'% (x_range[0], x_range[1])))
+	H_parameter = (input_map[const.H] if x_axis != const.H else ('%s-%s'% (x_range[0], x_range[1])))
 
 	path = os.path.relpath('statistics', abs_path) + "\\" + filename + '-(lambda=%s,mu=%s,theta=%s,C=%s,c0=%s,L=%s,H=%s,sim_time=%s).csv' % (lamb_parameter, mu_parameter, theta_parameter, C_parameter, c0_parameter, L_parameter, H_parameter, input_map["simulation_time"])
 	print("Result is written to " + path)
 
 	outfile=open(path,'w')
 	output = csv.writer(outfile, delimiter=';')
-	output.writerow(['# Simulation', 'lambda', 'mu', 'theta', 'C', 'c0', 'L', 'H', 'blocked', 'served', 'generated', 'B', 'N'])
+	output.writerow(['# Simulation', 'lambda', 'mu', 'theta', 'C', 'c0', 'L', 'H', 'blocked', 'served', 'generated', 'B', 'N', 'W system', 'Q', 'W_queue'])
 
 	i=0
 	for stat in generated_stat:
@@ -80,6 +84,9 @@ def write_results(filename, generated_stat, x_axis, x_range, input_map):
 		outrow.append(stat.generated)
 		outrow.append(stat.B)
 		outrow.append(stat.N)
+		outrow.append(stat.W_system)
+		outrow.append(stat.Q)
+		outrow.append(stat.W_queue)
 		output.writerow(outrow)
 	outfile.close()
 

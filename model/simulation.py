@@ -1,6 +1,5 @@
 __author__ = 'tsarev alexey'
 
-from enum import Enum
 from server import Server
 from queue import Queue
 from request import Request
@@ -12,10 +11,10 @@ from states import States
 #--------------------------------------------------------------------------------------------------------------------#
 
 class Simulation:
-	'''
+	"""
 		This class represents simulation process
-	'''
-	def __init__(self, lambd, mu, theta, servers_count, core_servers_count, L, H, simulation_time, max_queue_size, is_debug):
+	"""
+	def __init__(self, mode, lambd, mu, theta, servers_count, core_servers_count, L, H, simulation_time, max_queue_size, is_debug):
 		self.lambd = lambd
 		self.mu = mu
 		self.theta = theta
@@ -33,35 +32,39 @@ class Simulation:
 		self.servers = []
 		self.served_requests = []
 		self.generated_requests = []
+		self.mode = mode
 		for i in range(servers_count):
 			self.servers.append(Server(i, True if i <= core_servers_count else False, is_debug))
 
 	def get_system_state(self):
-		'''
+		"""
 			Calculate server state
-		'''
-		if self.system_state == States.IDLE:
-			if len(self.queue.requests) >= self.H:
-				return States.TURN_UP
-			else:
-				return States.IDLE
-		elif self.system_state == States.TURN_UP:
-			if len(self.queue.requests) <= self.L:
-				return States.TURN_OFF
-			else:
-				return States.TURN_UP
-		elif self.system_state == States.TURN_OFF:
-			if  len(self.queue.requests) >= self.H:
-				return States.TURN_UP
-			elif not self.has_turned_servers():
-				return States.IDLE
-			else:
-				return States.TURN_OFF
+		"""
+		if self.mode == "m/m/c/r":
+			return States.IDLE
+		else:
+			if self.system_state == States.IDLE:
+				if len(self.queue.requests) >= self.H:
+					return States.TURN_UP
+				else:
+					return States.IDLE
+			elif self.system_state == States.TURN_UP:
+				if len(self.queue.requests) <= self.L:
+					return States.TURN_OFF
+				else:
+					return States.TURN_UP
+			elif self.system_state == States.TURN_OFF:
+				if  len(self.queue.requests) >= self.H:
+					return States.TURN_UP
+				elif not self.has_turned_servers():
+					return States.IDLE
+				else:
+					return States.TURN_OFF
 	
 	def update_time(self):
-		'''
+		"""
 			Update time after last event
-		'''
+		"""
 		first_generated_request = self.get_first_arrived_generated_request()
 		first_served_server = self.get_first_served_server()
 		first_turned_server = self.get_first_turned_server()
@@ -85,9 +88,9 @@ class Simulation:
 		self.time = t
 
 	def get_free_deployed_server(self):
-		'''
+		"""
 			Return free working server
-		'''
+		"""
 		free_server = False
 		for server in self.servers:
 			if not server.is_busy and server.is_deployed and not server.to_be_turned_off:
@@ -95,9 +98,9 @@ class Simulation:
 		return free_server
 
 	def get_free_deployed_servers_count(self):
-		'''
+		"""
 			Return count of free working servers
-		'''
+		"""
 		count = 0
 		for server in self.servers:
 			if not server.is_busy and server.is_deployed and not server.to_be_turned_off:
@@ -105,9 +108,9 @@ class Simulation:
 		return count
 
 	def get_busy_deployed_servers_count(self):
-		'''
+		"""
 			Return count of busy working servers
-		'''
+		"""
 		count = 0
 		for server in self.servers:
 			if server.is_busy and server.is_deployed:
@@ -115,9 +118,9 @@ class Simulation:
 		return count
 
 	def get_deployed_servers_count(self):
-		'''
+		"""
 			Return working servers count
-		'''
+		"""
 		count = 0
 		for server in self.servers:
 			if server.is_deployed:
@@ -125,9 +128,9 @@ class Simulation:
 		return count
 
 	def get_first_arrived_generated_request(self):
-		'''
+		"""
 			Return request to be served first
-		'''
+		"""
 		generated_request = self.generated_requests[0]
 		for request in self.generated_requests:
 			if request.arrival_time < generated_request.arrival_time:
@@ -135,9 +138,9 @@ class Simulation:
 		return generated_request
 
 	def get_first_served_server(self):
-		'''
+		"""
 			Return server to be served first
-		'''
+		"""
 		served_server = Server(-1, True, False)
 		served_server.departure_time = self.simulation_time + 1
 		for server in self.servers:
@@ -146,9 +149,9 @@ class Simulation:
 		return served_server
 
 	def get_first_turned_server(self):
-		'''
+		"""
 			Return server to be turned on first
-		'''
+		"""
 		served_server = Server(-1, True, False)
 		served_server.turn_on_time = self.simulation_time + 1
 		for server in self.servers:		
@@ -157,9 +160,9 @@ class Simulation:
 		return served_server
 
 	def get_servers_to_turn_off(self):
-		'''
+		"""
 			Return servers list to be turned off
-		'''
+		"""
 		result = []
 		# sort servers by departure time
 		self.servers.sort(key=lambda x: x.departure_time)
@@ -174,9 +177,9 @@ class Simulation:
 		return result
 
 	def pop_generated_request(self, request):
-		'''
-			Delete request from list of generated request waiting to be served 
-		'''
+		"""
+			Delete request from list of generated request waiting to be served
+		"""
 		request_id = 0;
 		for req in self.generated_requests:
 			if req.ID == request.ID:
@@ -255,9 +258,9 @@ class Simulation:
 			else: break		
 
 	def start(self):
-		'''
+		"""
 			Run simulation
-		'''
+		"""
 		auto_continue = not self.is_debug
 
 		if self.is_debug:

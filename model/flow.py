@@ -7,9 +7,9 @@ from request import Request
 #													   FLOW														  	 #
 #--------------------------------------------------------------------------------------------------------------------#
 class Flow:
-	'''
+	"""
 		This class reperesents Data Flow
-	'''
+	"""
 	def __init__(self, lambd, mu, is_debug):
 		self.lambd = lambd
 		self.mu = mu
@@ -19,9 +19,9 @@ class Flow:
 		self.is_debug = is_debug
 
 	def generate(self):
-		'''
+		"""
 			Generate new request arrival
-		'''
+		"""
 		if self.is_debug: print("		generated new request")
 		alpha = random.expovariate(self.lambd)
 		beta = random.expovariate(self.mu)

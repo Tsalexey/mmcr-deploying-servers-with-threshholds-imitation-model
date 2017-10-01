@@ -3,35 +3,35 @@ __author__ = 'tsarev alexey'
 #													  Validator 												  	 #
 #--------------------------------------------------------------------------------------------------------------------#
 class Validator:
-	'''
+	"""
 		Static class for input parameters validation
-	'''
+	"""
 
-	def validate_main():
+	def validate_main(self):
 		is_valid = False
 		# TODO: implement
 		return is_valid
 
 	def validate_range(self, input_list):
-		'''
+		"""
 			Validate range parameter in format 'parameter=1-10'
-		'''
+		"""
 		validation_result = False if len(input_list) != 2 else True
 		has_range = True if len(input_list[1].split('-')) == 2 else False
 		return [has_range, validation_result]
 
 	def validate_single(self, input_list):
-		'''
+		"""
 			Validate single parameter in format 'parameter=123'
-		'''
+		"""
 		validation_result = False if len(input_list) != 2 else True	
 		has_range = True if len(input_list[1].split("-")) == 1 else False
 		return [has_range, validation_result]
 
 	def validate_stat_generator(self, args):
-		'''
+		"""
 			Validate input for stat_generator
-		'''
+		"""
 		has_range = False
 		validation_result = False
 		range_parameters_count = 0
@@ -73,10 +73,10 @@ class Validator:
 		return True
 
 	def validate_parameters_order(self, args):
-		'''
+		"""
 			Validate input parameter names
 			filename step=% lambda=% mu=% C=% c0=% Q=% theta=% L=% H=% simulation_time=% is_debug=% repeats(optionally)=%
-		'''
+		"""
 		is_valid = True
 		if self.get_name(args[2]) != "step": 
 			print("2nd parameter must be step")
@@ -118,9 +118,9 @@ class Validator:
 		return is_valid	
 
 	def get_name(self, str):
-		'''
+		"""
 			Return name of inputed tuple
-		'''
+		"""
 		l = str.split("=")
 		if len(l) != 1: return ""
 		return l[0]

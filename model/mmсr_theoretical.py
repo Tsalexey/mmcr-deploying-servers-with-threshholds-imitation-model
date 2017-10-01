@@ -31,7 +31,7 @@ def main():
 			else:
 				p.append(p0*math.pow(ro, i)/(math.pow(C, i-C)*math.factorial(C)))
 
-		B = p[C+Q-1]
+		B = p[C+Q]
 		print("B = ", B)
 
 if __name__ == '__main__':
