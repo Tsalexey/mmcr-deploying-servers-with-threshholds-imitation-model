@@ -1,3 +1,5 @@
+from graphics_generator import Graphics_generator
+
 __author__ = 'tsarev alexey'
 
 import csv
@@ -9,6 +11,7 @@ from validator import Validator
 from input_parser import Input_parser
 from statistics import Statistics
 from const import Const
+
 '''
 	This class is designed to collect simulation statistics and write it to file
 '''
@@ -40,6 +43,20 @@ def main():
 
 		filename = sys.argv[1]
 		write_results(filename, generated_stat, x_axis, x_range, input_map)
+
+		x = []
+		B = []
+		W = []
+		N = []
+		for stat in generated_stat:
+			x.append(stat.lambd)
+			B.append(stat.B)
+			N.append(stat.N)
+			W.append(stat.W_system)
+
+		y_dict = {"B": B, "W": W, "N": N}
+
+		Graphics_generator.plot(x, r'$\lambda, мс^-1$', y_dict, filename + ".pdf")
 
 		end_time = time.time()
 		print("Execution finished. Total execution time = %s seconds" % (end_time - start_time))
