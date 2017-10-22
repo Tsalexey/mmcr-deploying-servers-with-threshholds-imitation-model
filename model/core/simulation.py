@@ -1,11 +1,10 @@
 __author__ = 'tsarev alexey'
 
-from server import Server
-from queue import Queue
-from request import Request
-from flow import Flow
-from states import States
-
+from core.queue import Queue
+from core.request import Request
+from core.server import Server
+from core.states import States
+from core.flow import Flow
 #--------------------------------------------------------------------------------------------------------------------#
 #													  SIMULATION													 #
 #--------------------------------------------------------------------------------------------------------------------#
@@ -42,7 +41,7 @@ class Simulation:
 		"""
 		if self.mode == "m/m/c/r":
 			return States.IDLE
-		elif self.mode == "m/m/c[c0]/r":
+		if self.mode == "m/m/c[c0]/r":
 			if self.system_state == States.IDLE:
 				if len(self.queue.requests) == 0 and self.get_deployed_servers_count() == self.core_servers_count:
 					return States.IDLE
@@ -68,24 +67,29 @@ class Simulation:
 					return States.TURN_UP
 				return "Error[TURN_OFF]"
 			return "Error[m/m/c[c0]/r]"
-		else:
+		if self.mode == "m/m/c[c0]/r[l,h]":
 			if self.system_state == States.IDLE:
 				if len(self.queue.requests) >= self.H:
 					return States.TURN_UP
-				else:
+				if len(self.queue.requests) < self.H:
 					return States.IDLE
+				return "Error[IDLE]"
 			if self.system_state == States.TURN_UP:
 				if len(self.queue.requests) <= self.L:
 					return States.TURN_OFF
-				else:
+				if len(self.queue.requests) > self.L:
 					return States.TURN_UP
+				return "Error[TURN_UP]"
 			if self.system_state == States.TURN_OFF:
 				if len(self.queue.requests) >= self.H:
 					return States.TURN_UP
-				elif not self.has_turned_servers():
+				if len(self.queue.requests) < self.H and self.get_deployed_servers_count() == self.core_servers_count:
 					return States.IDLE
-				else:
+				if len(self.queue.requests) < self.H and self.get_deployed_servers_count() > self.core_servers_count:
 					return States.TURN_OFF
+				return "Error[TURN_OFF]"
+			return "Error[m/m/c[c0]/r[l,h]]"
+		return "Error[mode not supported]"
 	
 	def update_time(self):
 		"""

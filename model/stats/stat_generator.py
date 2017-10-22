@@ -1,5 +1,3 @@
-from graphics_generator import Graphics_generator
-
 __author__ = 'tsarev alexey'
 
 import csv
@@ -7,13 +5,15 @@ import sys
 import os
 import time
 
-from validator import Validator
-from input_parser import Input_parser
-from statistics import Statistics
-from const import Const
+sys.path.append('../')
+from graphics.graphics_generator import Graphics_generator
+from core.validator import Validator
+from core.input_parser import Input_parser
+from stats.statistics import Statistics
+from core.const import Const
 
 '''
-	This class is designed to collect simulation statistics and write it to file
+	This class is designed to collect simulation stats and write it to file
 '''
 
 def main():
@@ -33,7 +33,7 @@ def main():
 		for key, value in input_map.items():
 			print("		", key, "=", value)
 
-		print("Gathering statistics for ", x_axis, " from ", x_range[0], " to ", x_range[1], " with step ",
+		print("Gathering stats for ", x_axis, " from ", x_range[0], " to ", x_range[1], " with step ",
 			  input_map[const.STEP])
 
 		stat = Statistics(x_axis, x_range, input_map)
@@ -55,8 +55,9 @@ def main():
 			W.append(stat.W_system)
 
 		y_dict = {"B": B, "W": W, "N": N}
+		path = generate_filename(filename, x_axis, x_range, input_map) + ".pdf"
 
-		Graphics_generator.plot(x, r'$\lambda, мс^-1$', y_dict, filename + ".pdf")
+		Graphics_generator.plot(x, r'$\lambda, мс^-1$', y_dict, path)
 
 		end_time = time.time()
 		print("Execution finished. Total execution time = %s seconds" % (end_time - start_time))
@@ -66,18 +67,7 @@ def write_results(filename, generated_stat, x_axis, x_range, input_map):
 	"""
 		Write simulation data to output file
 	"""
-	abs_path = os.path.abspath(__file__)
-
-	const = Const()
-	lamb_parameter = (input_map[const.LAMBDA] if x_axis != const.LAMBDA else ('%s-%s'% (x_range[0], x_range[1])))
-	mu_parameter = (input_map[const.MU] if x_axis != const.MU else ('%s-%s'% (x_range[0], x_range[1])))
-	theta_parameter = (input_map[const.THETA] if x_axis != const.THETA else ('%s-%s'% (x_range[0], x_range[1])))
-	C_parameter = (input_map[const.C] if x_axis != const.C else ('%s-%s'% (x_range[0], x_range[1])))
-	c0_parameter = (input_map[const.C0] if x_axis != const.C0 else ('%s-%s'% (x_range[0], x_range[1])))
-	L_parameter = (input_map[const.L] if x_axis != const.L else ('%s-%s'% (x_range[0], x_range[1])))
-	H_parameter = (input_map[const.H] if x_axis != const.H else ('%s-%s'% (x_range[0], x_range[1])))
-
-	path = os.path.relpath('statistics', abs_path) + "\\" + filename + '-(lambda=%s,mu=%s,theta=%s,C=%s,c0=%s,L=%s,H=%s,sim_time=%s).csv' % (lamb_parameter, mu_parameter, theta_parameter, C_parameter, c0_parameter, L_parameter, H_parameter, input_map["simulation_time"])
+	path = generate_filename(filename, x_axis, x_range, input_map) + ".csv"
 	print("Result is written to " + path)
 
 	outfile=open(path,'w')
@@ -106,6 +96,24 @@ def write_results(filename, generated_stat, x_axis, x_range, input_map):
 		outrow.append(stat.W_queue)
 		output.writerow(outrow)
 	outfile.close()
+
+def generate_filename(filename, x_axis, x_range, input_map):
+	abs_path = os.path.abspath(__file__)
+
+	const = Const()
+	lamb_parameter = (input_map[const.LAMBDA] if x_axis != const.LAMBDA else ('%s-%s' % (x_range[0], x_range[1])))
+	mu_parameter = (input_map[const.MU] if x_axis != const.MU else ('%s-%s' % (x_range[0], x_range[1])))
+	theta_parameter = (input_map[const.THETA] if x_axis != const.THETA else ('%s-%s' % (x_range[0], x_range[1])))
+	C_parameter = (input_map[const.C] if x_axis != const.C else ('%s-%s' % (x_range[0], x_range[1])))
+	c0_parameter = (input_map[const.C0] if x_axis != const.C0 else ('%s-%s' % (x_range[0], x_range[1])))
+	L_parameter = (input_map[const.L] if x_axis != const.L else ('%s-%s' % (x_range[0], x_range[1])))
+	H_parameter = (input_map[const.H] if x_axis != const.H else ('%s-%s' % (x_range[0], x_range[1])))
+
+	path = os.path.relpath('stats',
+						   abs_path) + "\\" + filename + '-(lambda=%s,mu=%s,theta=%s,C=%s,c0=%s,L=%s,H=%s,sim_time=%s)' % (
+	lamb_parameter, mu_parameter, theta_parameter, C_parameter, c0_parameter, L_parameter, H_parameter,
+	input_map["simulation_time"])
+	return path
 
 if __name__ == '__main__':
 	main()

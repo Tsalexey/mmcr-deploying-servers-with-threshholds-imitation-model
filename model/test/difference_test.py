@@ -1,13 +1,17 @@
-import math
 import sys
 import time
-from simulation import Simulation
+
+sys.path.append('../')
+from core.simulation import Simulation
+from theoretical.mmcr import MMCR
+
 
 def main():
 	if len(sys.argv) != 7:
 		print("Input parameters must be: 'lambda mu C Q simulation_time repeats'")
 	else:
 		start_time = time.time()
+		print("Difference test for theoretical M/M/C/R model and 'm/m/c/r' imitation mode.")
 
 		lambd = float(sys.argv[1])
 		mu = float(sys.argv[2])
@@ -16,35 +20,12 @@ def main():
 		simulation_time = int(sys.argv[5])
 		repeats = int(sys.argv[6])
 
-		print("Difference test for M/M/C/R: lambda =", lambd, ", mu =", mu, ", C =", C, ", Q =", Q, ", sim time =", simulation_time, ", repeats =", repeats)
+		theoretical_mmcr = MMCR(lambd, mu, C, Q)
+		theoretical_result = theoretical_mmcr.run()
 
-		### theoretical
-		ro = lambd/mu
-		p0 = 0
-
-		for i in range(0, C):
-			p0 += math.pow(ro, i)/math.factorial(i)
-
-		for i in range(C, C+Q+1):
-			p0 += math.pow(ro, i)/(math.pow(C, i-C)*math.factorial(C))
-
-		p0 = math.pow(p0, -1)
-
-		p = []
-		p.append(p0)
-		for i in range(1, C+Q+1):
-			if i <= C-1:
-				p.append(math.pow(ro, i)/math.factorial(i)*p0)
-			else:
-				p.append(p0*math.pow(ro, i)/(math.pow(C, i-C)*math.factorial(C)))
-
-		B = p[C+Q]
-		W = 0
-		N = 0
-		for x in p:
-			N += x*p.index(x)
-		W = N/lambd
-
+		B = theoretical_result[0]
+		W = theoretical_result[1]
+		N = theoretical_result[2]
 
 		### sim
 		B2 = 0
@@ -54,13 +35,13 @@ def main():
 		L = 1
 		H = 1
 		c0 = C
-		is_debug = False
+		is_debug =  False
 		simulation = Simulation("m/m/c/r", lambd, mu, theta, C, c0, L, H, simulation_time, Q, is_debug)
 		for i in range(0, repeats):
 			simulation = Simulation("m/m/c/r", lambd, mu, theta, C, c0, L, H, simulation_time, Q, is_debug)
 			simulation.start()
 			B2 += simulation.queue.blocked/(simulation.queue.blocked+len(simulation.served_requests))
-			
+
 			w = 0
 			for request in simulation.served_requests:
 				w += (request.server_arrival_time + request.beta) - request.arrival_time
@@ -72,14 +53,13 @@ def main():
 		N2 /= repeats
 
 		end_time = time.time()
-		# print("theoretical B =", B, ", simulation B=", B2, ", Difference = ", abs(math.pow(B, 2) - math.pow(B2, 2)))
+
 		print("theoretical B =", B, ", simulation B=", B2, ", Difference = ", abs((B2-B)/B),
 			  "\ntheoretical W =", W, ", simulation W=", W2, ", Difference = ", abs((W2-W)/W),
 			  "\ntheoretical N =", N, ", simulation N=", N2, ", Difference = ", abs((N2 - N) / N))
 
-		# print("N=", N, ", N2=", N2)
-		# print("W=", W, ", W2=", W2)
-
 		print("Execution time = %s seconds" % (end_time - start_time))
+
+
 if __name__ == '__main__':
 	main()

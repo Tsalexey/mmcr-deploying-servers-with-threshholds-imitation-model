@@ -1,11 +1,15 @@
 __author__ = 'tsarev alexey'
 
+import sys
 import time
 import numpy as np
 
-from simulation import Simulation
-from generated_values_storage import Generated_values_storage
-from const import Const
+sys.path.append('../')
+from core.const import Const
+from core.simulation import Simulation
+from stats.generated_values_storage import Generated_values_storage
+
+
 #--------------------------------------------------------------------------------------------------------------------#
 #													  Statistics 												  	 #
 #--------------------------------------------------------------------------------------------------------------------#
@@ -49,7 +53,7 @@ class Statistics:
 				start_time = time.time()
 				generated_values_storage = Generated_values_storage()
 				for i in range(0, int(self.repeats)):
-					sim = Simulation("m/m/c/r", self.lambd if self.lambd != -1 else var,
+					sim = Simulation("m/m/c[c0]/r[l,h]", self.lambd if self.lambd != -1 else var,
 									 self.mu if self.mu != -1 else var, 
 									 self.theta if self.theta != -1 else var, 
 									 int(self.C) if self.C != -1 else var, 
@@ -71,7 +75,7 @@ class Statistics:
 			for i in range(1, self.repeats):
 				print("Repeat #", i)
 				generated_values_storage = Generated_values_storage()
-				sim = Simulation("m/m/c/r", self.lambd,
+				sim = Simulation("m/m/c[c0]/r[l,h]", self.lambd,
 								 self.mu ,
 								 self.theta,
 								 int(self.C),

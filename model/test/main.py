@@ -1,11 +1,12 @@
 __author__ = 'tsarev alexey'
 
 import csv
-import sys
 import os
-
-from simulation import Simulation
+import sys
 import time
+
+sys.path.append('../')
+from core.simulation import Simulation
 
 '''
 	This class is designed for one simple Simulation execution
@@ -48,9 +49,9 @@ def main():
 		B = 0
 		N = 0
 
-		simulation = Simulation("extended", lambd, mu, theta, C, c0, L, H, simulation_time, Q, is_debug)
+		simulation = Simulation("m/m/c[c0]/r[l,h]", lambd, mu, theta, C, c0, L, H, simulation_time, Q, is_debug)
 		for i in range(0, repeats):
-			simulation = Simulation("extended", lambd, mu, theta, C, c0, L, H, simulation_time, Q, is_debug)
+			simulation = Simulation("m/m/c[c0]/r[l,h]", lambd, mu, theta, C, c0, L, H, simulation_time, Q, is_debug)
 			simulation.start()
 			blocked += simulation.queue.blocked
 			served += len(simulation.served_requests)
@@ -73,9 +74,9 @@ def main():
 		print("Execution time = %s seconds" % (end_time - start_time))
 		print( "... to be implemented more summary ...")
 
-		# write statistics to file
+		# write stats to file
 		abs_path = os.path.abspath(__file__)
-		path = os.path.relpath('statistics', abs_path) + "\\" + file_name + '-(%s,%s,%s,%s,%s,%s,%s,%s).csv' % (lambd,mu,theta,C,c0,L,H,simulation_time)
+		path = os.path.relpath('stats', abs_path) + "\\" + file_name + '-(%s,%s,%s,%s,%s,%s,%s,%s).csv' % (lambd,mu,theta,C,c0,L,H,simulation_time)
 
 		outfile=open(path,'w')
 		output = csv.writer(outfile, delimiter=';')
