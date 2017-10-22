@@ -45,22 +45,10 @@ def main():
 			N += x*p.index(x)
 		W = N/lambd
 
-		Q = 0
-		W_q = 0
-
-		i = 0
-		for x in p:
-			if i >= C+1:
-				Q += x*p.index(x)
-
-			i +=1
-		W_q = Q/lambd
 
 		### sim
 		B2 = 0
 		W2 = 0
-		W2_q = 0
-		Q2 = 0
 		N2 = 0
 		theta = 1
 		L = 1
@@ -79,24 +67,15 @@ def main():
 			W2 += w/len(simulation.served_requests)
 			N2 += (w/len(simulation.served_requests))*lambd
 
-			w_q = 0
-			for request in simulation.served_requests:
-				w_q += request.server_arrival_time - request.queue_arrival_time
-			W2_q += w_q/len(simulation.served_requests)
-			Q2 += (w_q/len(simulation.served_requests))*lambd
 		B2 /= repeats
 		W2 /= repeats
 		N2 /= repeats
-		W2_q /= repeats
-		Q2 /= repeats
 
 		end_time = time.time()
 		# print("theoretical B =", B, ", simulation B=", B2, ", Difference = ", abs(math.pow(B, 2) - math.pow(B2, 2)))
 		print("theoretical B =", B, ", simulation B=", B2, ", Difference = ", abs((B2-B)/B),
 			  "\ntheoretical W =", W, ", simulation W=", W2, ", Difference = ", abs((W2-W)/W),
-			  "\ntheoretical N =", N, ", simulation N=", N2, ", Difference = ", abs((N2 - N) / N),
-			  "\ntheoretical Q =", Q, ", simulation Q=", Q2, ", Difference = ", abs((Q2-Q)/Q),
-			  "\ntheoretical W_q =", W_q, ", simulation W_q=", W2_q, ", Difference = ", abs((W2_q - W_q) / W_q))
+			  "\ntheoretical N =", N, ", simulation N=", N2, ", Difference = ", abs((N2 - N) / N))
 
 		# print("N=", N, ", N2=", N2)
 		# print("W=", W, ", W2=", W2)

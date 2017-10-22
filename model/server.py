@@ -54,12 +54,18 @@ class Server:
 			self.is_deployed = False
 		self.to_be_turned_on = False
 		self.to_be_turned_off = False
+		self.departure_time = 0
 		return self.served_request
+
+	def idle(self):
+		self.to_be_turned_off = False
+		self.to_be_turned_on = False
 
 	def turn_on(self, actual_time, theta):
 		"""
 			Start server turning
 		"""
+		self.to_be_turned_off = False
 		if not self.is_deployed and not self.to_be_turned_on:
 			if self.is_debug: print("		start deploying server #", self.ID)
 			self.turn_on_time = actual_time + random.expovariate(theta)
@@ -73,7 +79,10 @@ class Server:
 			Change server state
 		"""
 		self.to_be_turned_on = False
-		self.to_be_turned_off = True
+		if self.is_deployed:
+			self.to_be_turned_off = True
+		else :
+			self.to_be_turned_off = False
 		if self.is_debug: print("		turn off server #", self.ID)
 
 	def deploy(self):

@@ -34,7 +34,7 @@ class Simulation:
 		self.generated_requests = []
 		self.mode = mode
 		for i in range(servers_count):
-			self.servers.append(Server(i, True if i <= core_servers_count else False, is_debug))
+			self.servers.append(Server(i, True if i < core_servers_count else False, is_debug))
 
 	def get_system_state(self):
 		"""
@@ -42,19 +42,45 @@ class Simulation:
 		"""
 		if self.mode == "m/m/c/r":
 			return States.IDLE
+		elif self.mode == "m/m/c[c0]/r":
+			if self.system_state == States.IDLE:
+				if len(self.queue.requests) == 0 and self.get_deployed_servers_count() == self.core_servers_count:
+					return States.IDLE
+				if len(self.queue.requests) > 0:
+					return States.TURN_UP
+				if len(self.queue.requests) == 0 and self.get_deployed_servers_count() > self.core_servers_count:
+					return States.TURN_OFF
+				return "Error[IDLE]"
+			if self.system_state == States.TURN_UP:
+				if len(self.queue.requests) == 0 and self.get_deployed_servers_count() == self.core_servers_count:
+					return States.IDLE
+				if len(self.queue.requests) > 0:
+					return States.TURN_UP
+				if len(self.queue.requests) == 0 and self.get_deployed_servers_count() > self.core_servers_count:
+					return States.TURN_OFF
+				return "Error[TURN_UP]"
+			if self.system_state == States.TURN_OFF:
+				if len(self.queue.requests) == 0 and self.get_deployed_servers_count() > self.core_servers_count:
+					return States.TURN_OFF
+				if len(self.queue.requests) == 0 and self.get_deployed_servers_count() == self.core_servers_count:
+					return States.IDLE
+				if len(self.queue.requests) > 0:
+					return States.TURN_UP
+				return "Error[TURN_OFF]"
+			return "Error[m/m/c[c0]/r]"
 		else:
 			if self.system_state == States.IDLE:
 				if len(self.queue.requests) >= self.H:
 					return States.TURN_UP
 				else:
 					return States.IDLE
-			elif self.system_state == States.TURN_UP:
+			if self.system_state == States.TURN_UP:
 				if len(self.queue.requests) <= self.L:
 					return States.TURN_OFF
 				else:
 					return States.TURN_UP
-			elif self.system_state == States.TURN_OFF:
-				if  len(self.queue.requests) >= self.H:
+			if self.system_state == States.TURN_OFF:
+				if len(self.queue.requests) >= self.H:
 					return States.TURN_UP
 				elif not self.has_turned_servers():
 					return States.IDLE
@@ -71,7 +97,7 @@ class Simulation:
 
 		next_arrive_time = first_generated_request.arrival_time
 		next_serve_time = self.simulation_time + 1 if first_served_server.ID == -1 else first_served_server.departure_time
-		next_turn_time = self.simulation_time + 1 if first_turned_server.ID == -1 else first_turned_server.turn_on_time
+		next_turn_time = self.simulation_time + 1 if (first_turned_server.ID == -1 or self.system_state != States.TURN_UP) else first_turned_server.turn_on_time
 
 		t = min([next_arrive_time, next_serve_time, next_turn_time])
 		if self.is_debug:
@@ -166,7 +192,7 @@ class Simulation:
 		result = []
 		# sort servers by departure time
 		self.servers.sort(key=lambda x: x.departure_time)
-		for i in range(0, len(self.servers)-1):
+		for i in range(0, len(self.servers)):
 			self.servers[i].ID = i
 		# turn off c(t)-c0 served deployed servers
 		turned_off_servers = 0
@@ -188,7 +214,11 @@ class Simulation:
 			request_id += 1
 
 	def has_turned_servers(self):
-		return True if len(self.servers) > self.core_servers_count else False
+		turned_count = 0
+		for server in self.servers:
+			if server.is_deployed:
+				turned_count += 1
+		return True if turned_count != self.core_servers_count else False
 
 	def turn_on_servers(self):
 		# start turning up servers
@@ -212,7 +242,12 @@ class Simulation:
 				served_request = self.servers[server.ID].unload()
 				self.served_requests.append(served_request)				
 
+	def handle_idle(self):
+		for server in self.servers:
+			self.servers[server.ID].idle()
+
 	def handle_idle_mode(self):
+		self.handle_idle()
 		self.serve_request()
 		self.handle_request()
 		self.handle_queue()
@@ -273,8 +308,6 @@ class Simulation:
 			if self.is_debug:
 				print("TIME = " , self.time)
 
-			self.system_state = self.get_system_state()
-			
 			# IDLE
 			if self.system_state == States.IDLE:
 				self.handle_idle_mode()
@@ -284,6 +317,8 @@ class Simulation:
 			# TURN DOWN
 			elif self.system_state == States.TURN_OFF:
 				self.handle_turn_off_mode()
+
+			self.system_state = self.get_system_state()
 
 			if self.is_debug:
 				print("	System in ", self.system_state)
@@ -300,7 +335,6 @@ class Simulation:
 					server.get_info()
 
 			self.update_time()
-
 			if self.is_debug and not auto_continue:
 				user_input  = input("Press Enter to for next step, or input 'True' to turn on auto continue mode: ")
 				if bool(user_input) == True:
