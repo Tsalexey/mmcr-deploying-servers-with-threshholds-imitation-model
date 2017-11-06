@@ -113,7 +113,7 @@ class Validator:
 			is_valid = False
 		if len(args) == 13:
 			if self.get_name(args[13]) != "repeats": 
-				print("12th parameter must be is_debug")
+				print("12th parameter must be repeats")
 				is_valid = False	
 		return is_valid	
 

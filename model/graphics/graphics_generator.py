@@ -23,13 +23,17 @@ class Graphics_generator:
                 x_sm = np.array(x)
                 y_sm = np.array(values)
 
+                # #1
+                # interpolate_func = interp1d(x_sm, y_sm, kind='cubic')
+                # xnew = np.arange(min(x_sm), max(x_sm), 0.0001)
+                # ynew = interpolate_func(xnew)
+
                 x_smooth = np.linspace(x_sm.min(), x_sm.max(), 1000)
                 y_smooth = spline(x, values, x_smooth)
 
                 # pw = 10  # power of the smooth
                 # x_smooth1 = zoom(x_sm, pw)
                 # y_smooth1 = zoom(y_sm, pw)
-
                 # tck = interpolate.splrep(x, values, s=0)
                 # xnew = np.arange(0, 2 * np.pi, np.pi / 50)
                 # ynew = interpolate.splev(xnew, tck, der=0)

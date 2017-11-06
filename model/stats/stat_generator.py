@@ -48,13 +48,17 @@ def main():
 		B = []
 		W = []
 		N = []
+		Wq = []
+		Q = []
 		for stat in generated_stat:
 			x.append(stat.lambd)
 			B.append(stat.B)
 			N.append(stat.N)
 			W.append(stat.W_system)
+			Wq.append(stat.W_queue)
+			Q.append(stat.Q)
 
-		y_dict = {"B": B, "W": W, "N": N}
+		y_dict = {"B": B, "W": W, "N": N, "Wq": Wq, "Q": Q}
 		path = generate_filename(filename, x_axis, x_range, input_map) + ".pdf"
 
 		Graphics_generator.plot(x, r'$\lambda, мс^-1$', y_dict, path)
