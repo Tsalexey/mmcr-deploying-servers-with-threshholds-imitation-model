@@ -22,3 +22,4 @@ class Request:
 		self.beta = beta
 		self.queue_size_at_serving = 0
 		self.w = 0
+		self.wq = 0

@@ -40,5 +40,14 @@ class MMCR:
 		for x in p:
 			N += x * p.index(x)
 		W = N / self.lambd
-		print("MMCR: B = ", B, ", N = ", N, ", W = ", W)
-		return [B, W, N]
+
+		Q = 0
+		Wq = 0
+
+		for x in p:
+			if p.index(x) > self.C:
+				Q += x * p.index(x)
+		Wq = Q / self.lambd
+
+		print("MMCR: B = ", B, ", N = ", N, ", W = ", W, ", Wq = ", Wq, ", Q = ", Q)
+		return [B, W, N, Wq, Q]

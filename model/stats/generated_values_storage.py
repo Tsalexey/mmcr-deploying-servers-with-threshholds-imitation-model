@@ -52,6 +52,14 @@ class Generated_values_storage:
 		self.W_system += w / (len(simulation.served_requests) + len(simulation.queue.blocked_requests))
 		self.N += (w / (len(simulation.served_requests) + len(simulation.queue.blocked_requests))) * self.lambd
 
+		wq = 0
+		for request in simulation.served_requests:
+			wq += request.wq
+		for request in simulation.queue.blocked_requests:
+			wq += request.wq
+		self.W_queue += wq / (len(simulation.served_requests) + len(simulation.queue.blocked_requests))
+		self.Q += (wq / (len(simulation.served_requests) + len(simulation.queue.blocked_requests))) * self.lambd
+
 	def normalize(self, repeats):
 		"""
 			Normalize data if there was more then one repeats
