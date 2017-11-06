@@ -38,7 +38,8 @@ class Server:
 		self.served_request = request
 		self.arrival_time = request.server_arrival_time
 		self.departure_time = self.arrival_time + request.beta;
-		self.is_busy = True;
+		self.served_request.w = self.departure_time - request.arrival_time
+		self.is_busy = True
 		self.is_deployed = True
 		self.to_be_turned_on = False
 		self.to_be_turned_off = False

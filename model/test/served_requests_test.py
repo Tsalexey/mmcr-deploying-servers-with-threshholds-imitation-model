@@ -49,13 +49,11 @@ def main():
 
             w = 0
             for request in simulation.served_requests:
-                w += (request.server_arrival_time + request.beta) - request.arrival_time
-            W2 += w / len(simulation.served_requests)
-            N2 += (w / len(simulation.served_requests)) * lambd
-
-            w_q = 0
-            for request in simulation.served_requests:
-                w_q += request.server_arrival_time - request.queue_arrival_time
+                w += request.w
+            for request in simulation.queue.blocked_requests:
+                w += request.w
+            W2 += w / (len(simulation.served_requests) + len(simulation.queue.blocked_requests))
+            N2 += (w / (len(simulation.served_requests) + len(simulation.queue.blocked_requests))) * lambd
 
         B2 /= repeats
         W2 /= repeats

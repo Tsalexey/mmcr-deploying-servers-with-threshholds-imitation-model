@@ -46,15 +46,11 @@ class Generated_values_storage:
 
 		w = 0
 		for request in simulation.served_requests:
-			w += (request.server_arrival_time + request.beta) - request.arrival_time
-		self.W_system += w / len(simulation.served_requests)
-		self.N += (w / len(simulation.served_requests)) * self.lambd
-
-		w_q = 0
-		for request in simulation.served_requests:
-			w_q += request.server_arrival_time - request.queue_arrival_time
-		self.W_queue += w_q / len(simulation.served_requests)
-		self.Q += (w_q / len(simulation.served_requests)) * self.lambd
+			w += request.w
+		for request in simulation.queue.blocked_requests:
+			w += request.w
+		self.W_system += w / (len(simulation.served_requests) + len(simulation.queue.blocked_requests))
+		self.N += (w / (len(simulation.served_requests) + len(simulation.queue.blocked_requests))) * self.lambd
 
 	def normalize(self, repeats):
 		"""

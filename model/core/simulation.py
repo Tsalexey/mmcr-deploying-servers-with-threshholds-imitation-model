@@ -113,7 +113,7 @@ class Simulation:
 			if t == next_arrive_time: event = "ARRIVE"
 			if t == next_serve_time: event = "SERVE"
 			if t == next_turn_time: event = "TURN"
-			print("	next event=", event, ", arrive= ", t0, ", ",
+			print("	Event=", event, ", arrive= ", t0, ", ",
 				  "serve= ", t1, "(#", first_served_server.ID, "),"
 				  "turn up= ", t2, "(#", first_turned_server.ID, ")")
 
@@ -312,7 +312,7 @@ class Simulation:
 		if self.is_debug:
 			print("Simulation ended")
 
-	def start(self, requestsToServe):
+	def start_requests(self, requestsToServe):
 		"""
 			Run simulation
 		"""
@@ -343,14 +343,14 @@ class Simulation:
 		self.system_state = self.get_system_state()
 
 		if self.is_debug:
-			print("	System in ", self.system_state)
-			print("	Queue size = ", len(self.queue.requests), ", ",
+			print("	", self.system_state)
+			print("	Q = ", len(self.queue.requests), ", ",
 				  "blocked = ", self.queue.blocked, ", ",
-				  self.get_busy_deployed_servers_count(), "/", self.get_deployed_servers_count(), " busy, ",
-				  self.get_free_deployed_servers_count(), "/", self.get_deployed_servers_count(), " free, ",
-				  self.servers_count, " total servers, ",
-				  self.flow.generated_count, " generated, ",
-				  len(self.served_requests), " served")
+				  " busy = ", self.get_busy_deployed_servers_count(), "/", self.get_deployed_servers_count(), ",",
+				  " free = ", self.get_free_deployed_servers_count(), "/", self.get_deployed_servers_count(), ",",
+				  "C = ", self.servers_count, ",",
+				  " generated = ", self.flow.generated_count, ",",
+				  " served =", len(self.served_requests))
 
 		if self.is_debug:
 			for server in self.servers:
@@ -358,6 +358,7 @@ class Simulation:
 
 		self.update_time()
 		if self.is_debug and not self.auto_continue:
-			user_input = input("Press Enter to for next step, or input 'True' to turn on auto continue mode: ")
+			user_input = input("	Press Enter to for next step, or input 'True' to turn on auto continue mode: ")
 			if bool(user_input) == True:
-				auto_continue = True
+				self.auto_continue = True
+

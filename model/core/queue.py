@@ -10,6 +10,7 @@ class Queue:
 		self.max_size = max_size
 		self.blocked = 0
 		self.requests = []
+		self.blocked_requests = []
 		self.is_debug = is_debug
 
 	def push(self, request):
@@ -19,6 +20,8 @@ class Queue:
 		if len(self.requests) == self.max_size:
 			if self.is_debug: print("		push: request blocked")
 			self.blocked += 1
+			request.w = request.queue_arrival_time - request.arrival_time
+			self.blocked_requests.append(request)
 		else:
 			if self.is_debug: print("		push: request entered to queue")
 			self.requests.append(request)
