@@ -4,9 +4,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.backends.backend_pdf import PdfPages
 from scipy.interpolate import spline
+from scipy.ndimage import zoom
+from scipy.interpolate import interp1d
+from scipy import interpolate
 #--------------------------------------------------------------------------------------------------------------------#
 #													   GRAPHICS GENERATOR   										 #
 #--------------------------------------------------------------------------------------------------------------------#
+
 class Graphics_generator:
 
     def plot(x, x_name, y_dict, filename):
@@ -19,11 +23,19 @@ class Graphics_generator:
                 x_sm = np.array(x)
                 y_sm = np.array(values)
 
-                x_smooth = np.linspace(x_sm.min(), x_sm.max(), 100)
+                x_smooth = np.linspace(x_sm.min(), x_sm.max(), 1000)
                 y_smooth = spline(x, values, x_smooth)
 
-                ax.plot(x_smooth, y_smooth, color='red')
+                # pw = 10  # power of the smooth
+                # x_smooth1 = zoom(x_sm, pw)
+                # y_smooth1 = zoom(y_sm, pw)
 
+                # tck = interpolate.splrep(x, values, s=0)
+                # xnew = np.arange(0, 2 * np.pi, np.pi / 50)
+                # ynew = interpolate.splev(xnew, tck, der=0)
+
+                ax.plot(x_smooth, y_smooth)
+                # plt.legend(['point', 'spline', 'zoom', 'splev'])
                 ax.set_xlabel(x_name)
                 ax.set_ylabel(key, rotation=0)
 

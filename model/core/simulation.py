@@ -32,6 +32,8 @@ class Simulation:
 		self.served_requests = []
 		self.generated_requests = []
 		self.mode = mode
+		self.auto_continue = not self.is_debug
+
 		for i in range(servers_count):
 			self.servers.append(Server(i, True if i < core_servers_count else False, is_debug))
 
@@ -100,14 +102,14 @@ class Simulation:
 		first_turned_server = self.get_first_turned_server()
 
 		next_arrive_time = first_generated_request.arrival_time
-		next_serve_time = self.simulation_time + 1 if first_served_server.ID == -1 else first_served_server.departure_time
-		next_turn_time = self.simulation_time + 1 if (first_turned_server.ID == -1 or self.system_state != States.TURN_UP) else first_turned_server.turn_on_time
+		next_serve_time = float('inf') if first_served_server.ID == -1 else first_served_server.departure_time
+		next_turn_time = float('inf') if (first_turned_server.ID == -1 or self.system_state != States.TURN_UP) else first_turned_server.turn_on_time
 
 		t = min([next_arrive_time, next_serve_time, next_turn_time])
 		if self.is_debug:
 			t0 = "%.3f"%first_generated_request.arrival_time
-			t1 = "never" if next_serve_time == self.simulation_time + 1 else "%.3f"%next_serve_time
-			t2 = "never" if next_turn_time == self.simulation_time + 1 else "%.3f"%next_turn_time
+			t1 = "never" if next_serve_time == float('inf') else "%.3f"%next_serve_time
+			t2 = "never" if next_turn_time == float('inf') else "%.3f"%next_turn_time
 			if t == next_arrive_time: event = "ARRIVE"
 			if t == next_serve_time: event = "SERVE"
 			if t == next_turn_time: event = "TURN"
@@ -172,7 +174,7 @@ class Simulation:
 			Return server to be served first
 		"""
 		served_server = Server(-1, True, False)
-		served_server.departure_time = self.simulation_time + 1
+		served_server.departure_time = float('inf')
 		for server in self.servers:
 			if server.is_busy and server.is_deployed and server.departure_time < served_server.departure_time:
 				served_server = server
@@ -183,7 +185,7 @@ class Simulation:
 			Return server to be turned on first
 		"""
 		served_server = Server(-1, True, False)
-		served_server.turn_on_time = self.simulation_time + 1
+		served_server.turn_on_time = float('inf')
 		for server in self.servers:		
 			if server.to_be_turned_on and server.turn_on_time < served_server.turn_on_time:
 				served_server = server
@@ -300,48 +302,62 @@ class Simulation:
 		"""
 			Run simulation
 		"""
-		auto_continue = not self.is_debug
-
-		if self.is_debug:
-			print("Simulation started")
+		if self.is_debug: print("Simulation started")
 
 		self.generated_request = self.flow.generate()
 		self.generated_requests.append(self.generated_request)
 
 		while self.time < self.simulation_time:
-			if self.is_debug:
-				print("TIME = " , self.time)
-
-			# IDLE
-			if self.system_state == States.IDLE:
-				self.handle_idle_mode()
-			# TURN UP
-			elif self.system_state == States.TURN_UP:
-				self.handle_turn_on_mode()
-			# TURN DOWN
-			elif self.system_state == States.TURN_OFF:
-				self.handle_turn_off_mode()
-
-			self.system_state = self.get_system_state()
-
-			if self.is_debug:
-				print("	System in ", self.system_state)
-				print("	Queue size = ", len(self.queue.requests), ", ", 
-					  "blocked = ", self.queue.blocked, ", ",
-					  self.get_busy_deployed_servers_count(), "/", self.get_deployed_servers_count(), " busy, ",
-					  self.get_free_deployed_servers_count(), "/", self.get_deployed_servers_count(), " free, ",
-					  self.servers_count, " total servers, ",
-					  self.flow.generated_count, " generated, ",
-					  len(self.served_requests), " served")
-	
-			if self.is_debug:
-				for server in self.servers:
-					server.get_info()
-
-			self.update_time()
-			if self.is_debug and not auto_continue:
-				user_input  = input("Press Enter to for next step, or input 'True' to turn on auto continue mode: ")
-				if bool(user_input) == True:
-					auto_continue = True
+			self.run()
 		if self.is_debug:
 			print("Simulation ended")
+
+	def start(self, requestsToServe):
+		"""
+			Run simulation
+		"""
+		if self.is_debug: print("Simulation started")
+
+		self.generated_request = self.flow.generate()
+		self.generated_requests.append(self.generated_request)
+
+		while len(self.served_requests) < requestsToServe:
+			self.run()
+		if self.is_debug:
+			print("Simulation ended")
+
+	def run(self):
+		if self.is_debug:
+			print("TIME = ", self.time)
+
+		# IDLE
+		if self.system_state == States.IDLE:
+			self.handle_idle_mode()
+		# TURN UP
+		elif self.system_state == States.TURN_UP:
+			self.handle_turn_on_mode()
+		# TURN DOWN
+		elif self.system_state == States.TURN_OFF:
+			self.handle_turn_off_mode()
+
+		self.system_state = self.get_system_state()
+
+		if self.is_debug:
+			print("	System in ", self.system_state)
+			print("	Queue size = ", len(self.queue.requests), ", ",
+				  "blocked = ", self.queue.blocked, ", ",
+				  self.get_busy_deployed_servers_count(), "/", self.get_deployed_servers_count(), " busy, ",
+				  self.get_free_deployed_servers_count(), "/", self.get_deployed_servers_count(), " free, ",
+				  self.servers_count, " total servers, ",
+				  self.flow.generated_count, " generated, ",
+				  len(self.served_requests), " served")
+
+		if self.is_debug:
+			for server in self.servers:
+				server.get_info()
+
+		self.update_time()
+		if self.is_debug and not self.auto_continue:
+			user_input = input("Press Enter to for next step, or input 'True' to turn on auto continue mode: ")
+			if bool(user_input) == True:
+				auto_continue = True
