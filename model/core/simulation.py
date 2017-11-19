@@ -23,19 +23,44 @@ class Simulation:
 		self.H = H
 		self.simulation_time = simulation_time
 		self.is_debug = is_debug
-		self.time = 0
+		self.auto_continue = not self.is_debug
+		self.mode = mode
+
 		self.flow = Flow(lambd, mu, is_debug)
-		self.generated_request = Request(-1, 0, 0, 0)
 		self.queue = Queue(max_queue_size, is_debug)
+
+		self.generated_request = Request(-1, 0, 0, 0)
+
 		self.system_state = States.IDLE
+		self.prev_system_state = States.IDLE
+
 		self.servers = []
 		self.served_requests = []
 		self.generated_requests = []
-		self.mode = mode
-		self.auto_continue = not self.is_debug
+
+		self.time = 0
+		self.prev_time = 0
+		self.up_down_time = 0
+		self.prev_up_down_time = 0
+
+		self.up_down_count = 0
+		self.up_down_mean = 0
+
+		self.state_time = dict.fromkeys(States.get_States_list(States), 0)
+		self.state_count = dict.fromkeys(States.get_States_list(States), 0)
 
 		for i in range(servers_count):
 			self.servers.append(Server(i, True if i < core_servers_count else False, is_debug))
+
+	def update_state_time(self):
+		self.state_time[self.prev_system_state] += self.time - self.prev_time
+
+	def update_state_count(self):
+		self.state_count[self.prev_system_state] += 1
+
+	def update_system_state(self):
+		self.prev_system_state = self.system_state
+		self.system_state = self.get_system_state()
 
 	def get_system_state(self):
 		"""
@@ -96,8 +121,24 @@ class Simulation:
 		return "Error[mode not supported]"
 	
 	def update_time(self):
+		if self.system_state == States.IDLE:
+			self.prev_up_down_time = 0
+		else:
+			if self.prev_system_state == States.IDLE:
+				self.prev_up_down_time = self.time
+			else:
+				if self.system_state != self.prev_system_state:
+					if self.system_state == States.TURN_OFF or self.prev_system_state == States.TURN_OFF:
+						self.up_down_count += 1
+						self.up_down_time += self.time - self.prev_up_down_time
+						self.up_down_mean = self.up_down_time / self.up_down_count
+
+		self.prev_time = self.time
+		self.time = self.get_system_time()
+
+	def get_system_time(self):
 		"""
-			Update time after last event
+			Calculate time after last event
 		"""
 		first_generated_request = self.get_first_arrived_generated_request()
 		first_served_server = self.get_first_served_server()
@@ -119,7 +160,7 @@ class Simulation:
 				  "serve= ", t1, "(#", first_served_server.ID, "),"
 				  "turn up= ", t2, "(#", first_turned_server.ID, ")")
 
-		self.time = t
+		return t
 
 	def get_free_deployed_server(self):
 		"""
@@ -329,8 +370,7 @@ class Simulation:
 			print("Simulation ended")
 
 	def run(self):
-		if self.is_debug:
-			print("TIME = ", self.time)
+		if self.is_debug: print("TIME = ", self.time)
 
 		# IDLE
 		if self.system_state == States.IDLE:
@@ -342,8 +382,14 @@ class Simulation:
 		elif self.system_state == States.TURN_OFF:
 			self.handle_turn_off_mode()
 
-		self.system_state = self.get_system_state()
+		self.update_system_state()
+		self.update_time()
+		self.update_state_time()
+		self.update_state_count()
 
+		self.debug_run()
+
+	def debug_run(self):
 		if self.is_debug:
 			print("	", self.system_state)
 			print("	Q = ", len(self.queue.requests), ", ",
@@ -354,13 +400,14 @@ class Simulation:
 				  " generated = ", self.flow.generated_count, ",",
 				  " served =", len(self.served_requests))
 
-		if self.is_debug:
-			for server in self.servers:
-				server.get_info()
+			# for server in self.servers:
+			# 	server.get_info()
 
-		self.update_time()
+			print("	up-down: count = ", self.up_down_count, ", mean = ", self.up_down_mean, ", total = ", self.up_down_time)
+			print(self.state_count)
+			print(self.state_time)
+
 		if self.is_debug and not self.auto_continue:
 			user_input = input("	Press Enter to for next step, or input 'True' to turn on auto continue mode: ")
 			if bool(user_input) == True:
 				self.auto_continue = True
-

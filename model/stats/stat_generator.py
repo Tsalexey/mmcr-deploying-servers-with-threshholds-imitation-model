@@ -11,6 +11,7 @@ from core.validator import Validator
 from core.input_parser import Input_parser
 from stats.statistics import Statistics
 from core.const import Const
+from core.states import States
 
 '''
 	This class is designed to collect simulation stats and write it to file
@@ -76,7 +77,32 @@ def write_results(filename, generated_stat, x_axis, x_range, input_map):
 
 	outfile=open(path,'w')
 	output = csv.writer(outfile, delimiter=';')
-	output.writerow(['# Simulation', 'lambda', 'mu', 'theta', 'C', 'c0', 'L', 'H', 'blocked', 'served', 'generated', 'B', 'N', 'W system', 'Q', 'W_queue'])
+	output.writerow(['# Simulation',
+					 'lambda',
+					 'mu',
+					 'theta',
+					 'C',
+					 'c0',
+					 'L',
+					 'H',
+					 'blocked',
+					 'served',
+					 'generated',
+					 'B',
+					 'N',
+					 'W system',
+					 'Q',
+					 'W_queue',
+					 'IDLE time',
+					 'TURN OFF time',
+					 'TURN UP time',
+					 'FULL time',
+					 'IDLE count',
+					 'TURN OFF count',
+					 'TURN UP count',
+					 'FULL count',
+					 'up-down mean time',
+					 'up-down count'])
 
 	i=0
 	for stat in generated_stat:
@@ -98,6 +124,16 @@ def write_results(filename, generated_stat, x_axis, x_range, input_map):
 		outrow.append(stat.W_system)
 		outrow.append(stat.Q)
 		outrow.append(stat.W_queue)
+		outrow.append(stat.state_time[States.IDLE])
+		outrow.append(stat.state_time[States.TURN_OFF])
+		outrow.append(stat.state_time[States.TURN_UP])
+		outrow.append(stat.state_time[States.FULL])
+		outrow.append(stat.state_count[States.IDLE])
+		outrow.append(stat.state_count[States.TURN_OFF])
+		outrow.append(stat.state_count[States.TURN_UP])
+		outrow.append(stat.state_count[States.FULL])
+		outrow.append(stat.up_down_mean)
+		outrow.append(stat.up_down_count)
 		output.writerow(outrow)
 	outfile.close()
 

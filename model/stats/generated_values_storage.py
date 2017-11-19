@@ -1,3 +1,8 @@
+import sys
+
+sys.path.append('../')
+from core.states import States
+
 __author__ = 'tsarev alexey'
 #--------------------------------------------------------------------------------------------------------------------#
 #													   GENERATED_VALUES_STORAGE										 #
@@ -24,6 +29,11 @@ class Generated_values_storage:
 		self.N = 0
 		self.W_queue = 0
 		self.Q = 0
+		self.state_time = dict.fromkeys(States.get_States_list(States), 0)
+		self.state_count = dict.fromkeys(States.get_States_list(States), 0)
+		self.up_down_mean = 0;
+		self.up_down_count = 0
+
 
 	def add(self, simulation):
 		"""
@@ -60,6 +70,13 @@ class Generated_values_storage:
 		self.W_queue += wq / (len(simulation.served_requests) + len(simulation.queue.blocked_requests))
 		self.Q += (wq / (len(simulation.served_requests) + len(simulation.queue.blocked_requests))) * self.lambd
 
+		for state in States.get_States_list(States):
+			self.state_time[state] += simulation.state_time[state]
+			self.state_count[state] += simulation.state_count[state]
+
+		self.up_down_mean += simulation.up_down_mean
+		self.up_down_count += simulation.up_down_count
+
 	def normalize(self, repeats):
 		"""
 			Normalize data if there was more then one repeats
@@ -72,3 +89,7 @@ class Generated_values_storage:
 		self.W_system /= repeats
 		self.W_queue /= repeats
 		self.Q /= repeats
+			self.state_time[state] /= repeats
+			self.state_count[state] /= repeats
+		self.up_down_mean /= repeats
+		self.up_down_count /= repeats
