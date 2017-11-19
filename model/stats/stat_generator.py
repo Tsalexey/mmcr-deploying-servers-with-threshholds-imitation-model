@@ -149,7 +149,7 @@ def generate_filename(filename, x_axis, x_range, input_map):
 	L_parameter = (input_map[const.L] if x_axis != const.L else ('%s-%s' % (x_range[0], x_range[1])))
 	H_parameter = (input_map[const.H] if x_axis != const.H else ('%s-%s' % (x_range[0], x_range[1])))
 
-	path = os.path.relpath('stats',
+	path = os.path.relpath('stats\\generated',
 						   abs_path) + "\\" + filename + '-(lambda=%s,mu=%s,theta=%s,C=%s,c0=%s,L=%s,H=%s,sim_time=%s)' % (
 	lamb_parameter, mu_parameter, theta_parameter, C_parameter, c0_parameter, L_parameter, H_parameter,
 	input_map["simulation_time"])
