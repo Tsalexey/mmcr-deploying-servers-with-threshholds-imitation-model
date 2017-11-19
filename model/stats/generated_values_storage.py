@@ -89,6 +89,7 @@ class Generated_values_storage:
 		self.W_system /= repeats
 		self.W_queue /= repeats
 		self.Q /= repeats
+		for state in States.get_States_list(States):
 			self.state_time[state] /= repeats
 			self.state_count[state] /= repeats
 		self.up_down_mean /= repeats
