@@ -30,7 +30,7 @@ def main():
         W = 0
         N = 0
 
-        is_debug =  False
+        is_debug = not False
         simulation = Simulation("m/m/c[c0]/r[l,h]", lambd, mu, theta, C, c0, L, H, simulation_time, Q, is_debug)
         for i in range(0, repeats):
             simulation = Simulation("m/m/c[c0]/r[l,h]", lambd, mu, theta, C, c0, L, H, simulation_time, Q, is_debug)

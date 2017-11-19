@@ -6,3 +6,4 @@ class States(Enum):
 	IDLE = 1
 	TURN_UP = 2
 	TURN_OFF = 3
+	FULL = 4

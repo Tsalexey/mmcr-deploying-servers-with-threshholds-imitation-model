@@ -76,9 +76,11 @@ class Simulation:
 				if len(self.queue.requests) < self.H:
 					return States.IDLE
 				return "Error[IDLE]"
-			if self.system_state == States.TURN_UP:
+			if self.system_state == States.TURN_UP or self.system_state == States.FULL:
 				if len(self.queue.requests) <= self.L:
 					return States.TURN_OFF
+				if len(self.queue.requests) > self.L and self.servers_count == self.get_deployed_servers_count():
+					return States.FULL
 				if len(self.queue.requests) > self.L:
 					return States.TURN_UP
 				return "Error[TURN_UP]"
@@ -103,7 +105,7 @@ class Simulation:
 
 		next_arrive_time = first_generated_request.arrival_time
 		next_serve_time = float('inf') if first_served_server.ID == -1 else first_served_server.departure_time
-		next_turn_time = float('inf') if (first_turned_server.ID == -1 or self.system_state != States.TURN_UP) else first_turned_server.turn_on_time
+		next_turn_time = float('inf') if (first_turned_server.ID == -1 and (self.system_state != States.TURN_UP or self.system_state != States.FULL)) else first_turned_server.turn_on_time
 
 		t = min([next_arrive_time, next_serve_time, next_turn_time])
 		if self.is_debug:
@@ -333,8 +335,8 @@ class Simulation:
 		# IDLE
 		if self.system_state == States.IDLE:
 			self.handle_idle_mode()
-		# TURN UP
-		elif self.system_state == States.TURN_UP:
+		# TURN UP or FULL
+		elif self.system_state == States.TURN_UP or self.system_state == States.FULL:
 			self.handle_turn_on_mode()
 		# TURN DOWN
 		elif self.system_state == States.TURN_OFF:
