@@ -1,6 +1,7 @@
 import os
 from enum import Enum
 import sys
+from pathlib import Path
 
 sys.path.append('../')
 
@@ -52,3 +53,15 @@ class FileManager:
                     file_count += 1
                     file_dict[file_count] = file
         return [file_count, file_dict]
+
+    def is_file_exists(self, path, filename):
+        my_file = Path(path + "\\" + filename)
+        return my_file.is_file()
+
+    def generate_filename(self, path, filename):
+        p = path + "\\" + filename
+
+        i = 1
+        while self.is_file_exists(Path(path + "\\" + filename + i)):
+            i += 1
+        return p + i
