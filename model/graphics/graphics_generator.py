@@ -20,8 +20,8 @@ class Graphics_generator:
 
                 ax = fig.add_subplot(111)
 
-                x_sm = np.array(x)
-                y_sm = np.array(values)
+                x_sm = np.array(x).astype(np.float)
+                y_sm = np.array(values).astype(np.float)
 
                 # #1
                 # interpolate_func = interp1d(x_sm, y_sm, kind='cubic')
@@ -29,7 +29,7 @@ class Graphics_generator:
                 # ynew = interpolate_func(xnew)
 
                 x_smooth = np.linspace(x_sm.min(), x_sm.max(), 1000)
-                y_smooth = spline(x, values, x_smooth)
+                y_smooth = spline(x, y_sm, x_smooth)
 
                 # pw = 10  # power of the smooth
                 # x_smooth1 = zoom(x_sm, pw)

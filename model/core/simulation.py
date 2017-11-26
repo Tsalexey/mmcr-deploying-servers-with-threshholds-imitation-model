@@ -17,17 +17,17 @@ class Simulation:
 		self.lambd = lambd
 		self.mu = mu
 		self.theta = theta
-		self.servers_count = servers_count
-		self.core_servers_count = core_servers_count
-		self.L = L
-		self.H = H
+		self.servers_count = int(servers_count)
+		self.core_servers_count = int(core_servers_count)
+		self.L = int(L)
+		self.H = int(H)
 		self.simulation_time = simulation_time
 		self.is_debug = is_debug
 		self.auto_continue = not self.is_debug
 		self.mode = mode
 
 		self.flow = Flow(lambd, mu, is_debug)
-		self.queue = Queue(max_queue_size, is_debug)
+		self.queue = Queue(int(max_queue_size), is_debug)
 
 		self.generated_request = Request(-1, 0, 0, 0)
 
@@ -49,8 +49,8 @@ class Simulation:
 		self.state_time = dict.fromkeys(States.get_States_list(States), 0)
 		self.state_count = dict.fromkeys(States.get_States_list(States), 0)
 
-		for i in range(servers_count):
-			self.servers.append(Server(i, True if i < core_servers_count else False, is_debug))
+		for i in range(int(servers_count)):
+			self.servers.append(Server(i, True if i < int(core_servers_count) else False, is_debug))
 
 	def update_state_time(self):
 		self.state_time[self.prev_system_state] += self.time - self.prev_time

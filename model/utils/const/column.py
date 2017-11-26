@@ -1,0 +1,28 @@
+from enum import Enum
+
+
+class COLUMN(Enum):
+    SIMULATION = "Simulation"
+    LAMBDA = "lambda"
+    THETA = "theta"
+    C = "C"
+    c0 = "c0"
+    L = "L"
+    H = "H"
+    BLOCKED = "blocked"
+    SERVED = "served"
+    GENERATED = "generated"
+    B = "B"
+    W_SYSTEM = "W system"
+    Q = "Q"
+    W_QUEUE = "W queue"
+    IDLE_TIME = "IDLE time"
+    TURN_OFF_TIME = "TURN OFF time"
+    TURN_ON_TIME = "TURN ON time"
+    FULL_TIME = "FULL time"
+    IDLE_COUNT = "IDLE count"
+    TURN_OFF_COUNT = "TURN OFF count"
+    TURN_ON_COUNT = "TURN ON count"
+    FULL_COUNT = "FULL count"
+    UP_DOWN_TIME = "up-down mean time"
+    UP_DOWN_COUNT = "up-down count"

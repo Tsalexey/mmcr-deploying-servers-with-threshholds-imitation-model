@@ -2,6 +2,7 @@ from enum import Enum
 
 
 class CONDITION(Enum):
+    NOT_EQUAL = -1
     EQUAL = 0
     LESS = 1
     GREATER = 2
@@ -133,6 +134,8 @@ class ValuesFilter:
         Compare values with limit
     '''
     def compare(self, value, limit, condition):
+        if condition == CONDITION.NOT_EQUAL:
+            return float(value) != limit
         if condition == CONDITION.EQUAL:
             return float(value) == limit
         if condition == CONDITION.LESS:

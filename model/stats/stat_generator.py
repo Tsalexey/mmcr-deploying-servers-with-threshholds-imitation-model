@@ -45,6 +45,7 @@ def main():
 		filename = sys.argv[1]
 		write_results(filename, generated_stat, x_axis, x_range, input_map)
 
+		# plot graphics
 		x = []
 		B = []
 		W = []
