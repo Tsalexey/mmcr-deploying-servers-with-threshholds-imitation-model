@@ -76,7 +76,8 @@ def main():
 
 		# write stats to file
 		abs_path = os.path.abspath(__file__)
-		path = os.path.relpath('stats', abs_path) + "\\" + file_name + '-(%s,%s,%s,%s,%s,%s,%s,%s).csv' % (lambd,mu,theta,C,c0,L,H,simulation_time)
+		path = os.path.relpath('stats', abs_path)
+		path = os.path.join(path, file_name + '-(%s,%s,%s,%s,%s,%s,%s,%s).csv' % (lambd,mu,theta,C,c0,L,H,simulation_time))
 
 		outfile=open(path,'w')
 		output = csv.writer(outfile, delimiter=';')

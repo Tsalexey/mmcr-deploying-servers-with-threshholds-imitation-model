@@ -63,7 +63,6 @@ def main():
 
 
         abs_path = os.path.abspath(__file__)
-        #os.path.relpath(abs_path) + "\\" +
         path =  'served_requests_test' + '-(lambda=%s,mu=%s,theta=%s,C=%s,c0=%s,L=%s,H=%s,sim_time=%s, served requests =%s)' % (
             lambd, mu, theta, C, c0, L, H, (end_time-start_time), sr)
         path = path + ".csv"

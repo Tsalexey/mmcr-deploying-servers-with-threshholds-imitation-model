@@ -1,6 +1,8 @@
 import configparser
 from enum import Enum
 
+import os
+
 from utils.entities.dto import DTO
 from utils.filemanager import FileManager, FileType, DirPath
 
@@ -22,7 +24,7 @@ class ConfigParser:
         config = configparser.ConfigParser()
 
         if filename is not None:
-            with open(path_to_file + "\\" + filename) as cfg_file:
+            with open(os.path.join(path_to_file, filename)) as cfg_file:
                 config.readfp(cfg_file)  # read and parse entire file
 
             sections = {}

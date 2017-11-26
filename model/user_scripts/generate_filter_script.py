@@ -1,9 +1,8 @@
 import sys
 
-from optimization.ValuesFilter import ValuesFilter, CONDITION, OPERATION
-from utils.const.column import COLUMN
-
 sys.path.append('../')
+from utils.const.column import COLUMN
+from optimization.ValuesFilter import ValuesFilter, CONDITION, OPERATION
 from stats.statisticsmanager import StatisticsManager
 from utils.csvmanager import CSVManager
 from utils.parametersparser import ParametersParser

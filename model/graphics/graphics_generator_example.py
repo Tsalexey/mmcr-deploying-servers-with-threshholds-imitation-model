@@ -1,4 +1,5 @@
 import sys
+import os
 
 sys.path.append('../')
 from utils.csvmanager import CSVManager
@@ -9,7 +10,7 @@ def main():
     csv_manager = CSVManager()
     csv_dto = csv_manager.parse_csv()
 
-    path_with_name = csv_dto.path + "\\" + csv_dto.filename + ".pdf"
+    path_with_name = os.path.join(csv_dto.path, csv_dto.filename + ".pdf")
 
     x = csv_dto.data["lambda"]
     y = csv_dto.data

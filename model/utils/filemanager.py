@@ -10,8 +10,8 @@ class FileType(Enum):
     CONFIG = "config"
 
 class DirPath(Enum):
-    STATISTICS = "..\\model\\stats\\generated"
-    CONFIGS = "..\\model\\config"
+    STATISTICS = os.path.join("..","model", "stats", "generated")
+    CONFIGS = os.path.join("..", "model", "config")
 
 class FileManager:
 
@@ -55,13 +55,13 @@ class FileManager:
         return [file_count, file_dict]
 
     def is_file_exists(self, path, filename):
-        my_file = Path(path + "\\" + filename)
+        my_file = Path(os.path.join(path, filename))
         return my_file.is_file()
 
     def generate_filename(self, path, filename):
         p = path + "\\" + filename
 
         i = 1
-        while self.is_file_exists(Path(path + "\\" + filename + i)):
+        while self.is_file_exists(Path(os.path.join(path, filename + i))):
             i += 1
         return p + i

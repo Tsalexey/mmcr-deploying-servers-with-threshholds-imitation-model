@@ -1,5 +1,7 @@
 import csv
 
+import os
+
 from utils.configparser import ConfigParser
 from utils.entities.dto import DTO
 from utils.filemanager import FileManager, DirPath, FileType
@@ -29,7 +31,7 @@ class CSVManager:
         for name in column_names:
             csv_dict[name] = []
 
-        csv_file = open(path_to_file + "\\" + filename, 'rt')
+        csv_file = open(os.path.join(path_to_file, filename), 'rt')
 
         csv_reader = csv.DictReader(csv_file, fieldnames=column_names, delimiter=';', quotechar='"')
 
@@ -43,7 +45,7 @@ class CSVManager:
         Write DTO entity with .csv to file
     '''
     def write_csv(self, csv_dto):
-        with open(csv_dto.path + "\\" + csv_dto.filename, 'w') as fp:
+        with open(os.path.join(csv_dto.path, csv_dto.filename), 'w') as fp:
             writer = csv.DictWriter(fp, csv_dto.column_names, delimiter=';')
             writer.writeheader()
 

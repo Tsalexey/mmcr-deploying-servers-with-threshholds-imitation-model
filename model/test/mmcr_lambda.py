@@ -46,7 +46,8 @@ def main():
 
 		# write stats to file
 		abs_path = os.path.abspath(__file__)
-		path = os.path.relpath('stats', abs_path) + "\\" + "mmcr_lambda" + '-(%s,%s,%s,%s,%s).csv' % (lambd1, lambd2, mu, C, Q)
+		path = os.path.relpath('stats', abs_path)
+		path = os.path.join(path, "mmcr_lambda" + '-(%s,%s,%s,%s,%s).csv' % (lambd1, lambd2, mu, C, Q))
 
 		outfile=open(path,'w')
 		output = csv.writer(outfile, delimiter=';')
