@@ -19,16 +19,18 @@ def main():
     csv_manager = CSVManager()
     csv_manager.write_csv(csv_dto)
 
-    print("Finish! Gathered ", len(generated_stat), " results to storage, all result saved in ", csv_dto.name, " csv")
+    print("Finish! Gathered ", len(generated_stat), " results to storage, all result saved in ", csv_dto.filename, ".csv")
 
     W_max = 2000
     B_max = 0.05
 
     filter = ValuesFilter(csv_dto.data)
 
-    filter.simple_filter(COLUMN.W, CONDITION.LESS_OR_EQUAL, W_max)
+    filter.simple_filter(COLUMN.W_SYSTEM, CONDITION.LESS_OR_EQUAL, W_max)
     filter.simple_filter(COLUMN.B, CONDITION.LESS_OR_EQUAL, B_max)
-    filter.clever_filter({OPERATION.MINUS: [COLUMN.C, COLUMN.c0]}, CONDITION.MIN, None)
+    # filter.clever_filter({OPERATION.MINUS: [COLUMN.C, COLUMN.c0]}, CONDITION.MIN, None)
+    filter.simple_filter(COLUMN.UP_DOWN_TIME, CONDITION.MAX, None)
+    filter.simple_filter(COLUMN.UP_DOWN_COUNT, CONDITION.MIN, None)
 
     csv_dto.data = filter.filtered_csv
     csv_dto.filename = "[FILTERED]" + csv_dto.filename

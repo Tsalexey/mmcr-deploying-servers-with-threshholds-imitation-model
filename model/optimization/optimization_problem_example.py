@@ -19,7 +19,7 @@ def main():
 
     filter = ValuesFilter(csv_dto.data)
 
-    filter.simple_filter(COLUMN.W, CONDITION.LESS_OR_EQUAL, W_max)
+    filter.simple_filter(COLUMN.W_SYSTEM, CONDITION.LESS_OR_EQUAL, W_max)
     filter.simple_filter(COLUMN.B, CONDITION.LESS_OR_EQUAL, B_max)
     filter.simple_filter(COLUMN.UP_DOWN_TIME, CONDITION.GREATER_OR_EQUAL, t_max)
 

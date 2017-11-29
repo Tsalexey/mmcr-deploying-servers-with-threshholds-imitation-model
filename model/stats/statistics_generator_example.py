@@ -18,7 +18,7 @@ def main():
     csv_manager = CSVManager()
     csv_manager.write_csv(csv_dto)
 
-    print("Finish! Gathered ", len(generated_stat), " results to storage, all result saved in ", csv_dto.name, " csv")
+    print("Finish! Gathered ", len(generated_stat), " results to storage, all result saved in ", csv_dto.filename, " csv")
 
 if __name__ == '__main__':
 	main()

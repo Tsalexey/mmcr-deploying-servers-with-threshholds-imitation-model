@@ -45,7 +45,7 @@ class CSVManager:
         Write DTO entity with .csv to file
     '''
     def write_csv(self, csv_dto):
-        with open(os.path.join(csv_dto.path, csv_dto.filename), 'w') as fp:
+        with open(os.path.join(csv_dto.path, csv_dto.filename + ".csv"), 'w') as fp:
             writer = csv.DictWriter(fp, csv_dto.column_names, delimiter=';')
             writer.writeheader()
 
@@ -53,6 +53,9 @@ class CSVManager:
                 row = {}
                 for column in csv_dto.column_names:
                     values = csv_dto.data[column]
-                    temp = values[i]
+                    if (i > len(values) or len(values) == 0):
+                        temp = 0
+                    else:
+                        temp = values[i]
                     row[column] = temp
                 writer.writerow(row)

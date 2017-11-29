@@ -33,10 +33,18 @@ class StatisticsManager:
                             for L in self.range_dict[PARAM.L]:
                                 for H in self.range_dict[PARAM.H]:
                                     for Q in self.range_dict[PARAM.Q]:
+                                        if lambd <= 0: continue
+                                        if mu <= 0: continue
+                                        if theta <= 0: continue
+                                        if C <= 0: continue
+                                        if c0 <= 0: continue
+                                        if L <= 0: continue
+                                        if H <= 0: continue
+                                        if Q <= 0: continue
                                         if c0 > C or c0 < 0: continue
                                         if H - L < 2: continue
                                         if H < L or H > Q: continue
-                                        if L > Q or L <= 0 : continue
+                                        if L > Q: continue
 
                                         start_time = time.time()
                                         generated_values_storage = Generated_values_storage()
@@ -74,7 +82,7 @@ class StatisticsManager:
                              self.parameters[param].step)
 
     def log(self, lambd, mu, theta, C, c0, L, H, Q, start_time, end_time):
-        print("Generated values added to storage \n",
+        print("Generated: \n",
               self.get_string(lambd, PARAM.LAMBDA),
               self.get_string(mu, PARAM.MU),
               self.get_string(theta, PARAM.THETA),
@@ -83,25 +91,25 @@ class StatisticsManager:
               self.get_string(L, PARAM.L),
               self.get_string(H, PARAM.H),
               self.get_string(Q, PARAM.Q),
-              ",rep ", len(self.range_dict[PARAM.REPEATS]), " times, time = %s sec" % (end_time - start_time))
+              "rep ", len(self.range_dict[PARAM.REPEATS]), " times, time = %s sec" % (end_time - start_time))
 
     def get_string(self, value, param):
-        if len(self.range_dict[param] > 1):
-            s = "%.2s = %.2f/%.2f,"%(param.value, value, self.parameters[param].end_value)
-            return s
-        return ""
+        if self.parameters[param].start_value == self.parameters[param].end_value:
+            return "%.2s=%.2f," % (param.value, value)
+        else:
+            return "%.2s=%.2f/%.2f," % (param.value, value, self.parameters[param].end_value)
 
     def transform_to_csv_dto(self, generated_stat, config):
         manager = FileManager()
 
         path_to_file = manager.get_path_to_file(DirPath.STATISTICS)
-        filename = "Statistics for " + config.name + " #"
 
+        filename = "Statistics for " + config.filename + " #"
         i = 1
-        while manager.is_file_exists(path_to_file, filename + i):
+        while manager.is_file_exists(path_to_file, filename + str(i)):
             i += 1
 
-        filename += i
+        filename += str(i)
 
         data = self.transform_generated_values(config.column_names, generated_stat)
 
@@ -137,6 +145,7 @@ class StatisticsManager:
         up_down_mean = []
         up_down_count = []
 
+        i=0
         for stat in generated_stat:
             i = i + 1
             sim.append(i)

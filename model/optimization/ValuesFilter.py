@@ -154,7 +154,10 @@ class ValuesFilter:
     def copy_row(self, index):
         for key, values in self.csv.items():
             temp_value = self.filtered_csv[key]
-            temp_value.append(values[index])
+            if len(values) < index or len(values) == 0:
+                temp_value.append(0)
+            else:
+                temp_value.append(values[index])
             self.filtered_csv[key] = temp_value
 
     '''
