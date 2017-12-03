@@ -4,6 +4,7 @@
 .idea
 *.pdf
 *.csv
+model/stats/generated/*
 #################
 ## Eclipse
 #################
