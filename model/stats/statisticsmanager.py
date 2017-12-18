@@ -20,6 +20,7 @@ class StatisticsManager:
         self.range_dict = self.create_range_dict()
         self.is_debug = False
         self.mode = "m/m/c[c0]/r[l,h]"
+        self.strategy = "request"
 
     def generate_statistics(self):
         generated_values = []
@@ -50,7 +51,10 @@ class StatisticsManager:
                                         generated_values_storage = Generated_values_storage()
                                         for repeats in self.range_dict[PARAM.REPEATS]:
                                             sim = Simulation(self.mode, lambd, mu, theta, C, c0, L, H, self.simulation_time, Q, self.is_debug)
-                                            sim.start()
+                                            if (self.strategy == "time"):
+                                                sim.start()
+                                            else:
+                                                sim.start_requests(self.simulation_time)
                                             generated_values_storage.add(sim)
                                         end_time = time.time()
                                         generated_values_storage.normalize(self.parameters[PARAM.REPEATS].end_value)
@@ -149,31 +153,31 @@ class StatisticsManager:
         for stat in generated_stat:
             i = i + 1
             sim.append(i)
-            lambd.append(stat.lambd)
-            mu.append(stat.mu)
-            theta.append(stat.theta)
+            lambd.append("{:.5}".format(stat.lambd))
+            mu.append("{:.5}".format(stat.mu))
+            theta.append("{:.5}".format(stat.theta))
             C.append(stat.servers_count)
             c0.append(stat.core_servers_count)
             L.append(stat.L)
             H.append(stat.H)
-            blocked.append(stat.blocked)
-            served.append(stat.served)
-            generated.append(stat.generated)
-            B.append(stat.B)
-            N.append(stat.N)
-            W_system.append(stat.W_system)
-            Q.append(stat.Q)
-            W_queue.append(stat.W_queue)
-            idle_time.append(stat.state_time[States.IDLE])
-            off_time.append(stat.state_time[States.TURN_OFF])
-            up_time.append(stat.state_time[States.TURN_UP])
-            full_time.append(stat.state_time[States.FULL])
-            idle_count.append(stat.state_count[States.IDLE])
-            off_count.append(stat.state_count[States.TURN_OFF])
-            up_down_count.append(stat.state_count[States.TURN_UP])
-            full_count.append(stat.state_count[States.FULL])
-            up_down_mean.append(stat.up_down_mean)
-            up_down_count.append(stat.up_down_count)
+            blocked.append("{:.5}".format(stat.blocked))
+            served.append("{:.5}".format(stat.served))
+            generated.append("{:.5}".format(stat.generated))
+            B.append("{:.5}".format(stat.B))
+            N.append("{:.5}".format(stat.N))
+            W_system.append("{:.5}".format(stat.W_system))
+            Q.append("{:.5}".format(stat.Q))
+            W_queue.append("{:.5}".format(stat.W_queue))
+            idle_time.append("{:.5}".format(stat.state_time[States.IDLE]))
+            off_time.append("{:.5}".format(stat.state_time[States.TURN_OFF]))
+            up_time.append("{:.5}".format(stat.state_time[States.TURN_UP]))
+            full_time.append("{:.5}".format(stat.state_time[States.FULL]))
+            idle_count.append("{:.5}".format(stat.state_count[States.IDLE]))
+            off_count.append("{:.5}".format(stat.state_count[States.TURN_OFF]))
+            up_down_count.append("{:.5}".format(stat.state_count[States.TURN_UP]))
+            full_count.append("{:.5}".format(stat.state_count[States.FULL]))
+            up_down_mean.append("{:.5}".format(stat.up_down_mean))
+            up_down_count.append("{:.5}".format(stat.up_down_count))
 
         data[column_names[0]] = sim
         data[column_names[1]] = lambd

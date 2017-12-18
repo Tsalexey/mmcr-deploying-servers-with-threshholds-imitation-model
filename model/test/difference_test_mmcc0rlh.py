@@ -44,7 +44,7 @@ def main():
         simulation = Simulation("m/m/c[c0]/r", lambd, mu, theta, C, c0, L, H, simulation_time, Q, is_debug)
         for i in range(0, repeats):
             simulation = Simulation("m/m/c[c0]/r", lambd, mu, theta, C, c0, L, H, simulation_time, Q, is_debug)
-            simulation.start()
+            simulation.start_requests(10000)
             B2 += simulation.queue.blocked / (simulation.queue.blocked + len(simulation.served_requests))
 
             w = 0

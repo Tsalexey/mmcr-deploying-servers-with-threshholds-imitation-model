@@ -1,0 +1,27 @@
+#B;N;W system;Q;W queue;IDLE time;TURN OFF time;TURN UP time;FULL time;IDLE count;TURN OFF count;TURN UP count;FULL count;up-down mean time;up-down count
+
+filename = 'Statistics for 1.config #1.csv'
+set size square
+set grid
+set key outside right
+set terminal pdf
+set output "result.pdf"
+set pointsize 0.3
+
+plot filename u 2:12 w lp s mcsplines  t 'B', filename u 2:12 w p pt 7 lw 2 t ''
+plot filename u 2:13 w lp s mcsplines  t 'N', filename u 2:13 w p pt 7 lw 2 t ''
+plot filename u 2:14 w lp s mcsplines  t 'W system', filename u 2:14 w p pt 7 lw 2 t ''
+plot filename u 2:15 w lp s mcsplines  t 'Q', filename u 2:15 w p pt 7 lw 2 t ''
+plot filename u 2:16 w lp s mcsplines  t 'W queue', filename u 2:16 w p pt 7 lw 2 t ''
+plot filename u 2:17 w lp s mcsplines  t 'IDLE time', filename u 2:17 w p pt 7 lw 2 t ''
+plot filename u 2:18 w lp s mcsplines  t 'TURN OFF time', filename u 2:18 w p pt 7 lw 2 t ''
+plot filename u 2:19 w lp s mcsplines  t 'TURN UP time', filename u 2:19 w p pt 7 lw 2 t ''
+plot filename u 2:20 w lp s mcsplines  t 'FULL time', filename u 2:20 w p pt 7 lw 2 t ''
+plot filename u 2:21 w lp s mcsplines  t 'IDLE count', filename u 2:21 w p pt 7 lw 2 t ''
+plot filename u 2:22 w lp s mcsplines  t 'TURN OFF count', filename u 2:22 w p pt 7 lw 2 t ''
+plot filename u 2:23 w lp s mcsplines  t 'TURN UP count', filename u 2:23 w p pt 7 lw 2 t ''
+plot filename u 2:24 w lp s mcsplines  t 'FULL count', filename u 2:24 w p pt 7 lw 2 t ''
+plot filename u 2:25 w lp s mcsplines  t 'up-down mean', filename u 2:25 w p pt 7 lw 2 t ''
+plot filename u 2:26 w lp s mcsplines  t 'up-down count', filename u 2:26 w p pt 7 lw 2 t ''
+
+set output "delete_me.pdf"

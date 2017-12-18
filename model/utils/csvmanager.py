@@ -33,7 +33,7 @@ class CSVManager:
 
         csv_file = open(os.path.join(path_to_file, filename), 'rt')
 
-        csv_reader = csv.DictReader(csv_file, fieldnames=column_names, delimiter=';', quotechar='"')
+        csv_reader = csv.DictReader(csv_file, fieldnames=column_names, delimiter=' ', quotechar='"')
 
         header = next(csv_reader)
         for row in csv_reader:
@@ -46,7 +46,7 @@ class CSVManager:
     '''
     def write_csv(self, csv_dto):
         with open(os.path.join(csv_dto.path, csv_dto.filename + ".csv"), 'w') as fp:
-            writer = csv.DictWriter(fp, csv_dto.column_names, delimiter=';')
+            writer = csv.DictWriter(fp, csv_dto.column_names, delimiter=' ')
             writer.writeheader()
 
             for i in range(0, len(csv_dto.data[csv_dto.column_names[0]])):
