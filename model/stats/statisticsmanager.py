@@ -174,7 +174,7 @@ class StatisticsManager:
             full_time.append("{:.5}".format(stat.state_time[States.FULL]))
             idle_count.append("{:.5}".format(stat.state_count[States.IDLE]))
             off_count.append("{:.5}".format(stat.state_count[States.TURN_OFF]))
-            up_down_count.append("{:.5}".format(stat.state_count[States.TURN_UP]))
+            up_count.append("{:.5}".format(stat.state_count[States.TURN_UP]))
             full_count.append("{:.5}".format(stat.state_count[States.FULL]))
             up_down_mean.append("{:.5}".format(stat.up_down_mean))
             up_down_count.append("{:.5}".format(stat.up_down_count))
