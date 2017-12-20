@@ -1,0 +1,127 @@
+#B;N;W system;Q;W queue;IDLE time;TURN OFF time;TURN UP time;FULL time;IDLE count;TURN OFF count;TURN UP count;FULL count;up-down mean time;up-down count
+
+f1 = 'Statistics for 1.config #1.csv'
+f2 = 'Statistics for 2.config #1.csv'
+f3 = 'Statistics for 3.config #1.csv'
+f4 = 'Statistics for 4.config #1.csv'
+
+cond1 = ', L=50, H=100'
+cond2 = ', L=50, H=75'
+cond3 = ', L=50, H=125'
+cond4 = ', L=150, H=175'
+
+output_filename = 'lambda=0-5_mu=1_theta=0.003_c=5_c0=2_q=200'
+
+B = 'B'
+W = 'W'
+Q = 'Q'
+N = 'N'
+Wq = 'W queue'
+
+IDLE = 'IDLE'
+DOWN = 'DOWN'
+UP = 'UP'
+FULL = 'FULL'
+
+up_down_time = 'up-down mean time'
+up_down_count = 'up-down count'
+
+set size square
+set grid
+set key outside right
+set terminal pdf
+set output output_filename.'.pdf'
+set pointsize 0.3
+
+# point styles
+set style line 1 lc rgb 'green' pt 7 # circle
+set style line 2 lc rgb 'blue' pt 7 # circle
+set style line 3 lc rgb 'orange' pt 7 # circle
+set style line 4 lc rgb 'red' pt 7 # circle
+set style line 5 lc rgb 'black' pt 7 # circle
+
+# line styles
+set style line 101 lc rgb 'green'
+set style line 102 lc rgb 'blue'
+set style line 103 lc rgb 'orange'
+set style line 104 lc rgb 'red'
+set style line 105 lc rgb 'black'
+
+set style line 1001 dt '--' lc rgb 'green'
+set style line 1002 dt '--' lc rgb 'blue'
+set style line 1003 dt '--' lc rgb 'orange'
+set style line 1004 dt '--' lc rgb 'red'
+set style line 1005 dt '--' lc rgb 'black'
+
+set style line 10001 dt '-..-' lc rgb 'green'
+set style line 10002 dt '-..-' lc rgb 'blue'
+set style line 10003 dt '-..-' lc rgb 'orange'
+set style line 10004 dt '-..-' lc rgb 'red'
+set style line 10005 dt '-..-' lc rgb 'black'
+
+set style line 100001 dt '..' lc rgb 'green'
+set style line 100002 dt '..' lc rgb 'blue'
+set style line 100003 dt '..' lc rgb 'orange'
+set style line 100004 dt '..' lc rgb 'red'
+set style line 100005 dt '..' lc rgb 'black'
+
+set style line 1000001 dt '.' lc rgb 'green'
+set style line 1000002 dt '.' lc rgb 'blue'
+set style line 1000003 dt '.' lc rgb 'orange'
+set style line 1000004 dt '.' lc rgb 'red'
+set style line 1000005 dt '.' lc rgb 'black'
+
+plot f1 u 2:12 w l ls 101 s mcsplines t B.cond1, f1 u 2:12 w p ls 1 t '',\
+f2 u 2:12 w l ls 102 s mcsplines t B.cond2, f2 u 2:12 w p ls 2 t '',\
+f3 u 2:12 w l ls 103 s mcsplines t B.cond3, f3 u 2:12 w p ls 3 t '',\
+f4 u 2:12 w l ls 104 s mcsplines t B.cond4, f4 u 2:12 w p ls 4 t ''
+
+# N&Q
+plot f1 u 2:13 w l ls 101 s mcsplines t N.cond1, f1 u 2:13 w p ls 1 t '',\
+f1 u 2:15 w l ls 1001 s mcsplines t Q.cond1, f1 u 2:15 w p ls 1 t '',\
+f2 u 2:13 w l ls 102 s mcsplines t N.cond2, f2 u 2:13 w p ls 2 t '',\
+f2 u 2:15 w l ls 1002 s mcsplines t Q.cond2, f2 u 2:15 w p ls 2 t '',\
+f3 u 2:13 w l ls 103 s mcsplines t N.cond3, f3 u 2:13 w p ls 3 t '',\
+f3 u 2:15 w l ls 1003 s mcsplines t Q.cond3, f3 u 2:15 w p ls 3 t '',\
+f4 u 2:13 w l ls 104 s mcsplines t N.cond4, f4 u 2:13 w p ls 4 t '',\
+f4 u 2:15 w l ls 1004 s mcsplines t Q.cond4, f4 u 2:15 w p ls 4 t ''
+
+# W&W
+plot f1 u 2:14 w l ls 101 s mcsplines t W.cond1, f1 u 2:14 w p ls 1 t '',\
+f1 u 2:16 w l ls 1001 s mcsplines t Wq.cond1, f1 u 2:16 w p ls 1 t '',\
+f2 u 2:14 w l ls 102 s mcsplines t W.cond2, f2 u 2:14 w p ls 2 t '',\
+f2 u 2:16 w l ls 1002 s mcsplines t Wq.cond2, f2 u 2:16 w p ls 2 t '',\
+f3 u 2:14 w l ls 103 s mcsplines t W.cond3, f3 u 2:14 w p ls 3 t '',\
+f3 u 2:16 w l ls 1003 s mcsplines t Wq.cond3, f3 u 2:16 w p ls 3 t '',\
+f4 u 2:14 w l ls 104 s mcsplines t W.cond4, f4 u 2:14 w p ls 4 t '',\
+f4 u 2:16 w l ls 1004 s mcsplines t Wq.cond4, f4 u 2:16 w p ls 4 t ''
+
+# state time
+plot f1 u 2:17 w l ls 101 s mcsplines t IDLE.cond1, f1 u 2:17 w p ls 1 t '',\
+f1 u 2:18 w l ls 102 s mcsplines t DOWN.cond1, f1 u 2:18 w p ls 2 t '',\
+f1 u 2:19 w l ls 103 s mcsplines t UP.cond1, f1 u 2:19 w p ls 3 t '',\
+f1 u 2:20 w l ls 104 s mcsplines t FULL.cond1, f1 u 2:20 w p ls 4 t '',\
+f2 u 2:17 w l ls 1001 s mcsplines t IDLE.cond2, f2 u 2:17 w p ls 1 t '',\
+f2 u 2:18 w l ls 1002 s mcsplines t DOWN.cond2, f2 u 2:18 w p ls 2 t '',\
+f2 u 2:19 w l ls 1003 s mcsplines t UP.cond2, f2 u 2:19 w p ls 3 t '',\
+f2 u 2:20 w l ls 1004 s mcsplines t FULL.cond2, f2 u 2:20 w p ls 4 t '',\
+f3 u 2:17 w l ls 10001 s mcsplines t IDLE.cond3, f3 u 2:17 w p ls 1 t '',\
+f3 u 2:18 w l ls 10002 s mcsplines t DOWN.cond3, f3 u 2:18 w p ls 2 t '',\
+f3 u 2:19 w l ls 10003 s mcsplines t UP.cond3, f3 u 2:19 w p ls 3 t '',\
+f3 u 2:20 w l ls 10004 s mcsplines t FULL.cond3, f3 u 2:20 w p ls 4 t '',\
+f4 u 2:17 w l ls 1000001 s mcsplines t IDLE.cond4, f4 u 2:17 w p ls 1 t '',\
+f4 u 2:18 w l ls 1000002 s mcsplines t DOWN.cond4, f4 u 2:18 w p ls 2 t '',\
+f4 u 2:19 w l ls 1000003 s mcsplines t UP.cond4, f4 u 2:19 w p ls 3 t '',\
+f4 u 2:20 w l ls 1000004 s mcsplines t FULL.cond4, f4 u 2:20 w p ls 4 t ''
+
+plot f1 u 2:25 w l ls 101 s mcsplines t up_down_time.cond1, f1 u 2:25 w p ls 1 t '',\
+f2 u 2:25 w l ls 102 s mcsplines t up_down_time.cond2, f2 u 2:25 w p ls 2 t '',\
+f3 u 2:25 w l ls 103 s mcsplines t up_down_time.cond3, f3 u 2:25 w p ls 3 t '',\
+f4 u 2:25 w l ls 104 s mcsplines t up_down_time.cond4, f4 u 2:25 w p ls 4 t ''
+
+plot f1 u 2:26 w l ls 101 s mcsplines t up_down_count.cond1, f1 u 2:26 w p ls 1 t '',\
+f2 u 2:26 w l ls 102 s mcsplines t up_down_count.cond2, f2 u 2:26 w p ls 2 t '',\
+f3 u 2:26 w l ls 103 s mcsplines t up_down_count.cond3, f3 u 2:26 w p ls 3 t '',\
+f4 u 2:26 w l ls 104 s mcsplines t up_down_count.cond4, f4 u 2:26 w p ls 4 t ''
+
+set output "delete_me.pdf"

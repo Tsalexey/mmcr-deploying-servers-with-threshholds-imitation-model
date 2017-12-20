@@ -20,6 +20,7 @@ class Generated_values_storage:
 		self.L = 0
 		self.H = 0
 		self.simulation_time = 0
+		self.time = 0
 		self.is_debug = False
 		self.blocked = 0
 		self.served = 0
@@ -47,6 +48,7 @@ class Generated_values_storage:
 		self.L = simulation.L
 		self.H = simulation.H
 		self.simulation_time = simulation.simulation_time
+		self.time += simulation.time
 		self.is_debug = simulation.is_debug
 
 		self.blocked += simulation.queue.blocked
@@ -89,8 +91,21 @@ class Generated_values_storage:
 		self.W_system /= repeats
 		self.W_queue /= repeats
 		self.Q /= repeats
+		self.time /= repeats
 		for state in States.get_States_list(States):
 			self.state_time[state] /= repeats
 			self.state_count[state] /= repeats
+
+		# get part of time for state
+		t = 0
+		c = 0
+		for state in States.get_States_list(States):
+			t += self.state_time[state]
+			c += self.state_count[state]
+
+		for state in States.get_States_list(States):
+			self.state_time[state] /= t
+			self.state_count[state] /= c
+
 		self.up_down_mean /= repeats
 		self.up_down_count /= repeats

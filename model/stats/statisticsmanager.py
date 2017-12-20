@@ -44,6 +44,7 @@ class StatisticsManager:
                                         if Q <= 0: continue
                                         if c0 > C or c0 < 0: continue
                                         if H - L < 2: continue
+                                        if Q - H <= 2: continue
                                         if H < L or H > Q: continue
                                         if L > Q: continue
 
