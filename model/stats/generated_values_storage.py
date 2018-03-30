@@ -59,17 +59,24 @@ class Generated_values_storage:
 		w = 0
 		for request in simulation.served_requests:
 			w += request.w
-		for request in simulation.queue.blocked_requests:
-			w += request.w
-		self.W_system += w / (len(simulation.served_requests) + len(simulation.queue.blocked_requests))
+		# for request in simulation.queue.blocked_requests:
+		# 	w += request.w
+		# self.W_system += w / (len(simulation.served_requests) + len(simulation.queue.blocked_requests))
+		# self.N += (w / (len(simulation.served_requests) + len(simulation.queue.blocked_requests))) * self.lambd
+
+		self.W_system += w / (len(simulation.served_requests) ) #+ len(simulation.queue.blocked_requests))
 		self.N += (w / (len(simulation.served_requests) + len(simulation.queue.blocked_requests))) * self.lambd
+
 
 		wq = 0
 		for request in simulation.served_requests:
 			wq += request.wq
-		for request in simulation.queue.blocked_requests:
-			wq += request.wq
-		self.W_queue += wq / (len(simulation.served_requests) + len(simulation.queue.blocked_requests))
+		# for request in simulation.queue.blocked_requests:
+		# 	wq += request.wq
+		# self.W_queue += wq / (len(simulation.served_requests) + len(simulation.queue.blocked_requests))
+		# self.Q += (wq / (len(simulation.served_requests) + len(simulation.queue.blocked_requests))) * self.lambd
+
+		self.W_queue += wq / (len(simulation.served_requests) ) #+ len(simulation.queue.blocked_requests))
 		self.Q += (wq / (len(simulation.served_requests) + len(simulation.queue.blocked_requests))) * self.lambd
 
 		for state in States.get_States_list(States):

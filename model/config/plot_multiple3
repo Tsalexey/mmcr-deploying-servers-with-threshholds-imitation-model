@@ -1,0 +1,232 @@
+#B;N;W system;Q;W queue;IDLE time;TURN OFF time;TURN UP time;FULL time;IDLE count;TURN OFF count;TURN UP count;FULL count;up-down mean time;up-down count
+
+#1
+f1_1 = 'Statistics for #1_1.config #1.csv'
+f1_2 = 'Statistics for #1_2.config #1.csv'
+f1_3 = 'Statistics for #1_3.config #1.csv'
+f1__4 = 'Statistics for #1_(4).config #1.csv'
+#2
+f2_1 = 'Statistics for #2_1.config #1.csv'
+f2_2 = 'Statistics for #2_2.config #1.csv'
+f2_3 = 'Statistics for #2_3.config #1.csv'
+f2__4 = 'Statistics for #2_(4).config #1.csv'
+#3
+f3_1 = 'Statistics for #3_1.config #1.csv'
+f3_2 = 'Statistics for #3_2.config #1.csv'
+f3_3 = 'Statistics for #3_3.config #1.csv'
+f3__4 = 'Statistics for #3_(4).config #1.csv'
+f3__5 = 'Statistics for #3_(5).config #1.csv'
+f3__6 = 'Statistics for #3_(6).config #1.csv'
+#4
+f4_1 = 'Statistics for #4_1.config #1.csv'
+f4_2 = 'Statistics for #4_2.config #1.csv'
+f4_3 = 'Statistics for #4_3.config #1.csv'
+f4__4 = 'Statistics for #4_(4).config #1.csv'
+f4__5 = 'Statistics for #4_(5).config #1.csv'
+f4__6 = 'Statistics for #4_(6).config #1.csv'
+#5
+f5_1 = 'Statistics for #5_1.config #1.csv'
+f5_2 = 'Statistics for #5_2.config #1.csv'
+f5_3 = 'Statistics for #5_3.config #1.csv'
+f5__4 = 'Statistics for #5_(4).config #1.csv'
+f5__5 = 'Statistics for #5_(5).config #1.csv'
+f5__6 = 'Statistics for #5_(6).config #1.csv'
+
+#1
+cond_f1_1 = ', L=21, H=23'
+cond_f1_2 = ', L=19, H=25'
+cond_f1_3 = ', L=15, H=29'
+cond_f1__4 = ', w/o th'
+#2
+cond_f2_1 = ', L=10, H=20'
+cond_f2_2 = ', L=60, H=70'
+cond_f2_3 = ', L=100, H=110'
+cond_f2__4 = ', w/o th'
+#3
+cond_f3_1 = ', theta=0.00166'
+cond_f3_2 = ', theta=0.0033333'
+cond_f3_3 = ', theta=0.002'
+cond_f3__4 = ', w/o th, theta=0.00166
+cond_f3__5 = ', w/o th, theta=0.0033333'
+cond_f3__6 = ', w/o th, theta=0.002'
+#4
+cond_f4_1 = ', Q=150'
+cond_f4_2 = ', Q=250'
+cond_f4_3 = ', Q=400'
+cond_f4__4 = ', w/o th, Q=150'
+cond_f4__5 = ', w/o th, Q=250'
+cond_f4__6 = ', w/o th, Q=400'
+#5
+cond_f5_1 = ', c0=30'
+cond_f5_2 = ', c0=35'
+cond_f5_3 = ', c0=40'
+cond_f5__4 = ', w/o th, c0=30'
+cond_f5__5 = ', w/o th, c0=35'
+cond_f5__6 = ', w/o th, c0=40'
+
+output_filename = 'fig_lambda=30-65,mu=1,c=60,c0=40,theta=0.00166,q=250'
+
+B = 'B'
+Q = 'Q'
+Wq = 'W queue'
+
+set size square
+set grid
+set key outside right
+set terminal pdf
+set output output_filename.'.pdf'
+set pointsize 0.3
+
+# point styles
+set style line 1 lc rgb 'green' pt 7 # circle
+set style line 2 lc rgb 'blue' pt 7 # circle
+set style line 3 lc rgb 'orange' pt 7 # circle
+set style line 4 lc rgb 'red' pt 7 # circle
+set style line 5 lc rgb 'black' pt 7 # circle
+
+# line styles
+set style line 101 lc rgb 'green'
+set style line 102 lc rgb 'blue'
+set style line 103 lc rgb 'orange'
+set style line 104 lc rgb 'red'
+set style line 105 lc rgb 'black'
+
+set style line 1001 dt '--' lc rgb 'green'
+set style line 1002 dt '--' lc rgb 'blue'
+set style line 1003 dt '--' lc rgb 'orange'
+set style line 1004 dt '--' lc rgb 'red'
+set style line 1005 dt '--' lc rgb 'black'
+
+set style line 10001 dt '-..-' lc rgb 'green'
+set style line 10002 dt '-..-' lc rgb 'blue'
+set style line 10003 dt '-..-' lc rgb 'orange'
+set style line 10004 dt '-..-' lc rgb 'red'
+set style line 10005 dt '-..-' lc rgb 'black'
+
+set style line 100001 dt '..' lc rgb 'green'
+set style line 100002 dt '..' lc rgb 'blue'
+set style line 100003 dt '..' lc rgb 'orange'
+set style line 100004 dt '..' lc rgb 'red'
+set style line 100005 dt '..' lc rgb 'black'
+
+set style line 1000001 dt '.' lc rgb 'green'
+set style line 1000002 dt '.' lc rgb 'blue'
+set style line 1000003 dt '.' lc rgb 'orange'
+set style line 1000004 dt '.' lc rgb 'red'
+set style line 1000005 dt '.' lc rgb 'black'
+
+#1
+#B
+plot f1_1 u 2:12 w l ls 101 s mcsplines t B.cond_f1_1, f1_1 u 2:12 w p ls 1 t '',\
+f1_2 u 2:12 w l ls 102 s mcsplines t B.cond_f1_2, f1_2 u 2:12 w p ls 2 t '',\
+f1_3 u 2:12 w l ls 103 s mcsplines t B.cond_f1_3, f1_3 u 2:12 w p ls 3 t '',\
+f1__4 u 2:12 w l ls 104 s mcsplines t B.cond_f1__4, f1__4 u 2:12 w p ls 4 t ''
+
+# Q
+plot f1_1 u 2:15 w l ls 101 s mcsplines t Q.cond_f1_1, f1_1 u 2:15 w p ls 1 t '',\
+f1_2 u 2:15 w l ls 102 s mcsplines t Q.cond_f1_2, f1_2 u 2:15 w p ls 2 t '',\
+f1_3 u 2:15 w l ls 103 s mcsplines t Q.cond_f1_3, f1_3 u 2:15 w p ls 3 t '',\
+f1__4 u 2:15 w l ls 104 s mcsplines t Q.cond_f1__4, f1__4 u 2:15 w p ls 4 t ''
+
+# W
+plot f1_1 u 2:16 w l ls 101 s mcsplines t Wq.cond_f1_1, f1_1 u 2:16 w p ls 1 t '',\
+f1_2 u 2:16 w l ls 102 s mcsplines t Wq.cond_f1_2, f1_2 u 2:16 w p ls 2 t '',\
+f1_3 u 2:16 w l ls 103 s mcsplines t Wq.cond_f1_3, f1_3 u 2:16 w p ls 3 t '',\
+f1__4 u 2:16 w l ls 104 s mcsplines t Wq.cond_f1__4, f1__4 u 2:16 w p ls 4 t ''
+
+#2
+#B
+plot f2_1 u 2:12 w l ls 101 s mcsplines t B.cond_f2_1, f2_1 u 2:12 w p ls 1 t '',\
+f2_2 u 2:12 w l ls 102 s mcsplines t B.cond_f2_2, f2_2 u 2:12 w p ls 2 t '',\
+f2_3 u 2:12 w l ls 103 s mcsplines t B.cond_f2_3, f2_3 u 2:12 w p ls 3 t '',\
+f2__4 u 2:12 w l ls 104 s mcsplines t B.cond_f2__4, f2__4 u 2:12 w p ls 4 t ''
+
+# Q
+plot f2_1 u 2:15 w l ls 101 s mcsplines t Q.cond_f2_1, f2_1 u 2:15 w p ls 1 t '',\
+f2_2 u 2:15 w l ls 102 s mcsplines t Q.cond_f2_2, f2_2 u 2:15 w p ls 2 t '',\
+f2_3 u 2:15 w l ls 103 s mcsplines t Q.cond_f2_3, f2_3 u 2:15 w p ls 3 t '',\
+f2__4 u 2:15 w l ls 104 s mcsplines t Q.cond_f2__4, f2__4 u 2:15 w p ls 4 t ''
+
+# W
+plot f2_1 u 2:16 w l ls 101 s mcsplines t Wq.cond_f2_1, f2_1 u 2:16 w p ls 1 t '',\
+f2_2 u 2:16 w l ls 102 s mcsplines t Wq.cond_f2_2, f2_2 u 2:16 w p ls 2 t '',\
+f2_3 u 2:16 w l ls 103 s mcsplines t Wq.cond_f2_3, f2_3 u 2:16 w p ls 3 t '',\
+f2__4 u 2:16 w l ls 104 s mcsplines t Wq.cond_f2__4, f2__4 u 2:16 w p ls 4 t ''
+
+#3
+#B
+plot f3_1 u 2:12 w l ls 101 s mcsplines t B.cond_f3_1, f3_1 u 2:12 w p ls 1 t '',\
+f3_2 u 2:12 w l ls 102 s mcsplines t B.cond_f3_2, f3_2 u 2:12 w p ls 2 t '',\
+f3_3 u 2:12 w l ls 103 s mcsplines t B.cond_f3_3, f3_3 u 2:12 w p ls 3 t '',\
+f3__4 u 2:12 w l ls 104 s mcsplines t B.cond_f3__4, f3__4 u 2:12 w p ls 4 t '',\
+f3__5 u 2:12 w l ls 1004 s mcsplines t B.cond_f3__5, f3__5 u 2:12 w p ls 4 t '',\
+f3__6 u 2:12 w l ls 10004 s mcsplines t B.cond_f3__6, f3__6 u 2:12 w p ls 4 t ''
+
+# Q
+plot f3_1 u 2:15 w l ls 101 s mcsplines t Q.cond_f3_1, f3_1 u 2:15 w p ls 1 t '',\
+f3_2 u 2:15 w l ls 102 s mcsplines t Q.cond_f3_2, f3_2 u 2:15 w p ls 2 t '',\
+f3_3 u 2:15 w l ls 103 s mcsplines t Q.cond_f3_3, f3_3 u 2:15 w p ls 3 t '',\
+f3__4 u 2:15 w l ls 104 s mcsplines t Q.cond_f3__4, f3__4 u 2:15 w p ls 4 t '',\
+f3__5 u 2:15 w l ls 1004 s mcsplines t Q.cond_f3__5, f3__5 u 2:15 w p ls 4 t '',\
+f3__6 u 2:15 w l ls 10004 s mcsplines t Q.cond_f3__6, f3__6 u 2:15 w p ls 4 t ''
+
+# W
+plot f3_1 u 2:16 w l ls 101 s mcsplines t Wq.cond_f3_1, f3_1 u 2:16 w p ls 1 t '',\
+f3_2 u 2:16 w l ls 102 s mcsplines t Wq.cond_f3_2, f3_2 u 2:16 w p ls 2 t '',\
+f3_3 u 2:16 w l ls 103 s mcsplines t Wq.cond_f3_3, f3_3 u 2:16 w p ls 3 t '',\
+f3__4 u 2:16 w l ls 104 s mcsplines t Wq.cond_f3__4, f3__4 u 2:16 w p ls 4 t '',\
+f3__5 u 2:16 w l ls 1004 s mcsplines t Wq.cond_f3__5, f3__5 u 2:16 w p ls 4 t '',\
+f3__6 u 2:16 w l ls 10004 s mcsplines t Wq.cond_f3__6, f3__6 u 2:16 w p ls 4 t ''
+
+#4
+#B
+plot f4_1 u 2:12 w l ls 101 s mcsplines t B.cond_f4_1, f4_1 u 2:12 w p ls 1 t '',\
+f4_2 u 2:12 w l ls 102 s mcsplines t B.cond_f4_2, f4_2 u 2:12 w p ls 2 t '',\
+f4_3 u 2:12 w l ls 103 s mcsplines t B.cond_f4_3, f4_3 u 2:12 w p ls 3 t '',\
+f4__4 u 2:12 w l ls 104 s mcsplines t B.cond_f4__4, f4__4 u 2:12 w p ls 4 t '',\
+f4__5 u 2:12 w l ls 1004 s mcsplines t B.cond_f4__5, f4__5 u 2:12 w p ls 4 t '',\
+f4__6 u 2:12 w l ls 10004 s mcsplines t B.cond_f4__6, f4__6 u 2:12 w p ls 4 t ''
+
+# Q
+plot f4_1 u 2:15 w l ls 101 s mcsplines t Q.cond_f4_1, f4_1 u 2:15 w p ls 1 t '',\
+f4_2 u 2:15 w l ls 102 s mcsplines t Q.cond_f4_2, f4_2 u 2:15 w p ls 2 t '',\
+f4_3 u 2:15 w l ls 103 s mcsplines t Q.cond_f4_3, f4_3 u 2:15 w p ls 3 t '',\
+f4__4 u 2:15 w l ls 104 s mcsplines t Q.cond_f4__4, f4__4 u 2:15 w p ls 4 t '',\
+f4__5 u 2:15 w l ls 1004 s mcsplines t Q.cond_f4__5, f4__5 u 2:15 w p ls 4 t '',\
+f4__6 u 2:15 w l ls 10004 s mcsplines t Q.cond_f4__6, f4__6 u 2:15 w p ls 4 t ''
+
+# W
+plot f4_1 u 2:16 w l ls 101 s mcsplines t Wq.cond_f4_1, f4_1 u 2:16 w p ls 1 t '',\
+f4_2 u 2:16 w l ls 102 s mcsplines t Wq.cond_f4_2, f4_2 u 2:16 w p ls 2 t '',\
+f4_3 u 2:16 w l ls 103 s mcsplines t Wq.cond_f4_3, f4_3 u 2:16 w p ls 3 t '',\
+f4__4 u 2:16 w l ls 104 s mcsplines t Wq.cond_f4__4, f4__4 u 2:16 w p ls 4 t '',\
+f4__5 u 2:16 w l ls 1004 s mcsplines t Wq.cond_f4__5, f4__5 u 2:16 w p ls 4 t '',\
+f4__6 u 2:16 w l ls 10004 s mcsplines t Wq.cond_f4__6, f4__6 u 2:16 w p ls 4 t ''
+
+#5
+#B
+plot f5_1 u 2:12 w l ls 101 s mcsplines t B.cond_f5_1, f5_1 u 2:12 w p ls 1 t '',\
+f5_2 u 2:12 w l ls 102 s mcsplines t B.cond_f5_2, f5_2 u 2:12 w p ls 2 t '',\
+f5_3 u 2:12 w l ls 103 s mcsplines t B.cond_f5_3, f5_3 u 2:12 w p ls 3 t '',\
+f5__4 u 2:12 w l ls 104 s mcsplines t B.cond_f5__4, f5__4 u 2:12 w p ls 4 t '',\
+f5__5 u 2:12 w l ls 1004 s mcsplines t B.cond_f5__5, f5__5 u 2:12 w p ls 4 t '',\
+f5__6 u 2:12 w l ls 10004 s mcsplines t B.cond_f5__6, f5__6 u 2:12 w p ls 4 t ''
+
+# Q
+plot f5_1 u 2:15 w l ls 101 s mcsplines t Q.cond_f5_1, f5_1 u 2:15 w p ls 1 t '',\
+f5_2 u 2:15 w l ls 102 s mcsplines t Q.cond_f5_2, f5_2 u 2:15 w p ls 2 t '',\
+f5_3 u 2:15 w l ls 103 s mcsplines t Q.cond_f5_3, f5_3 u 2:15 w p ls 3 t '',\
+f5__4 u 2:15 w l ls 104 s mcsplines t Q.cond_f5__4, f5__4 u 2:15 w p ls 4 t '',\
+f5__5 u 2:15 w l ls 1004 s mcsplines t Q.cond_f5__5, f5__5 u 2:15 w p ls 4 t '',\
+f5__6 u 2:15 w l ls 10004 s mcsplines t Q.cond_f5__6, f5__6 u 2:15 w p ls 4 t ''
+
+# W
+plot f5_1 u 2:16 w l ls 101 s mcsplines t Wq.cond_f5_1, f5_1 u 2:16 w p ls 1 t '',\
+f5_2 u 2:16 w l ls 102 s mcsplines t Wq.cond_f5_2, f5_2 u 2:16 w p ls 2 t '',\
+f5_3 u 2:16 w l ls 103 s mcsplines t Wq.cond_f5_3, f5_3 u 2:16 w p ls 3 t '',\
+f5__4 u 2:16 w l ls 104 s mcsplines t Wq.cond_f5__4, f5__4 u 2:16 w p ls 4 t '',\
+f5__5 u 2:16 w l ls 1004 s mcsplines t Wq.cond_f5__5, f5__5 u 2:16 w p ls 4 t '',\
+f5__6 u 2:16 w l ls 10004 s mcsplines t Wq.cond_f5__6, f5__6 u 2:16 w p ls 4 t ''
+
+set output "delete_me.pdf"
+

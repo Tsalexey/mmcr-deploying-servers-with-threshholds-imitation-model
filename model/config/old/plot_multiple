@@ -1,16 +1,16 @@
 #B;N;W system;Q;W queue;IDLE time;TURN OFF time;TURN UP time;FULL time;IDLE count;TURN OFF count;TURN UP count;FULL count;up-down mean time;up-down count
 
-f1 = 'Statistics for test.config #1.csv'
-f2 = 'Statistics for test2.config #1.csv'
-f3 = 'Statistics for test3.config #1.csv'
-f4 = 'Statistics for test5.config #1.csv'
+f1 = 'Statistics for 1.config #1.csv'
+f2 = 'Statistics for 2.config #1.csv'
+f3 = 'Statistics for 3.config #1.csv'
+f4 = 'Statistics for 4.config #1.csv'
 
-cond1 = ', 5-7'
-cond2 = ', 13-15'
-cond3 = ', 21-23'
-cond4 = ', w/o'
+cond1 = ', L=50, H=100'
+cond2 = ', L=50, H=75'
+cond3 = ', L=50, H=125'
+cond4 = ', L=150, H=175'
 
-output_filename = 'lambda=30-65,mu=1,c=60,c0=40,theta=0.00166,q=250'
+output_filename = 'lambda=0-5_mu=1_theta=0.003_c=5_c0=2_q=200'
 
 B = 'B'
 W = 'W'

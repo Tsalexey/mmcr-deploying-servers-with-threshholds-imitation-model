@@ -1,11 +1,11 @@
 #B;N;W system;Q;W queue;IDLE time;TURN OFF time;TURN UP time;FULL time;IDLE count;TURN OFF count;TURN UP count;FULL count;up-down mean time;up-down count
 
-filename = 'Statistics for test3.config #1.csv'
+filename = 'Statistics for ecms.config #1.csv'
 set size square
 set grid
 set key outside right
 set terminal pdf
-set output "test3.pdf"
+set output "ecms8.pdf"
 set pointsize 0.3
 
 # point styles

@@ -19,7 +19,7 @@ class StatisticsManager:
         self.simulation_time = self.parameters[PARAM.TIME].start_value
         self.range_dict = self.create_range_dict()
         self.is_debug = False
-        self.mode = "m/m/c[c0]/r[l,h]"
+        self.mode = "m/m/c[c0]/r[l,h]" #"m/m/c[c0]/r" #"m/m/c[c0]/r[l,h]"
         self.strategy = "request"
 
     def generate_statistics(self):
