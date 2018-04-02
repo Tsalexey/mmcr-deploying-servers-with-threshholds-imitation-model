@@ -19,6 +19,16 @@ class ParametersParser:
         if validator.validate(params_dict):
             return [self.parse(params_dict), config_dto]
 
+    def parse_parameters(self, name):
+        parser = ConfigParser()
+        validator = ParametersValidator()
+
+        config_dto = parser.parse_config(name)
+        params_dict = self.get_parameters(config_dto.data)
+
+        if validator.validate(params_dict):
+            return [self.parse(params_dict), config_dto]
+
     def parse(self, dict):
         params = {}
         for param, value in dict.items():

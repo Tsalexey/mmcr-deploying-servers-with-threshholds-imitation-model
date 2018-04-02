@@ -35,15 +35,15 @@ def main():
         for i in range(0, repeats):
             simulation = Simulation("m/m/c[c0]/r[l,h]", lambd, mu, theta, C, c0, L, H, simulation_time, Q, is_debug)
             simulation.start_requests(simulation_time)
-            B += simulation.queue.blocked / (simulation.queue.blocked + len(simulation.served_requests))
+            B += simulation.queue.blocked / (simulation.queue.blocked + simulation.served_count)
 
             w = 0
             for request in simulation.served_requests:
                 w += request.w
             for request in simulation.queue.blocked_requests:
                 w += request.w
-            W += w / (len(simulation.served_requests) + len(simulation.queue.blocked_requests))
-            N += (w / (len(simulation.served_requests) + len(simulation.queue.blocked_requests))) * lambd
+            W += w / (simulation.served_count + len(simulation.queue.blocked_requests))
+            N += (w / (simulation.served_count + len(simulation.queue.blocked_requests))) * lambd
 
         B /= repeats
         W /= repeats

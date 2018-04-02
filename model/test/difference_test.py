@@ -45,23 +45,23 @@ def main():
 		for i in range(0, repeats):
 			simulation = Simulation("m/m/c/r", lambd, mu, theta, C, c0, L, H, simulation_time, R, is_debug)
 			simulation.start()
-			B2 += simulation.queue.blocked/(simulation.queue.blocked+len(simulation.served_requests))
+			B2 += simulation.queue.blocked/(simulation.queue.blocked+simulation.served_count)
 
 			w = 0
 			for request in simulation.served_requests:
 				w += request.w
 			for request in simulation.queue.blocked_requests:
 				w+= request.w
-			W2 += w/(len(simulation.served_requests) + len(simulation.queue.blocked_requests))
-			N2 += (w/(len(simulation.served_requests) + len(simulation.queue.blocked_requests)))*lambd
+			W2 += w/(simulation.served_count + len(simulation.queue.blocked_requests))
+			N2 += (w/(simulation.served_count + len(simulation.queue.blocked_requests)))*lambd
 
 			wq = 0
 			for request in simulation.served_requests:
 				wq += request.wq
 			for request in simulation.queue.blocked_requests:
 				wq += request.wq
-			Wq2 += wq / (len(simulation.served_requests) + len(simulation.queue.blocked_requests))
-			Q2 += (wq / (len(simulation.served_requests) + len(simulation.queue.blocked_requests))) * lambd
+			Wq2 += wq / (simulation.served_count + len(simulation.queue.blocked_requests))
+			Q2 += (wq / (simulation.served_count + len(simulation.queue.blocked_requests))) * lambd
 
 		B2 /= repeats
 		W2 /= repeats

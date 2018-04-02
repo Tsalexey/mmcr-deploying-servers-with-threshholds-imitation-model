@@ -51,33 +51,21 @@ class Generated_values_storage:
 		self.time += simulation.time
 		self.is_debug = simulation.is_debug
 
-		self.blocked += simulation.queue.blocked
-		self.served += len(simulation.served_requests)
+		temp_blocked = simulation.queue.blocked;
+		temp_served = simulation.served_count;
+		temp_served_w = simulation.served_sum_w;
+		temp_served_wq = simulation.served_sum_wq;
+
+		self.blocked += temp_blocked
+		self.served += temp_served
 		self.generated += simulation.flow.generated_count
-		self.B += simulation.queue.blocked / (simulation.queue.blocked + len(simulation.served_requests))
 
-		w = 0
-		for request in simulation.served_requests:
-			w += request.w
-		# for request in simulation.queue.blocked_requests:
-		# 	w += request.w
-		# self.W_system += w / (len(simulation.served_requests) + len(simulation.queue.blocked_requests))
-		# self.N += (w / (len(simulation.served_requests) + len(simulation.queue.blocked_requests))) * self.lambd
+		self.B += temp_blocked / (temp_blocked + temp_served)
+		self.W_system += temp_served_w / temp_served;
+		self.N += (temp_served_w / (temp_served + temp_blocked)) * self.lambd
 
-		self.W_system += w / (len(simulation.served_requests) ) #+ len(simulation.queue.blocked_requests))
-		self.N += (w / (len(simulation.served_requests) + len(simulation.queue.blocked_requests))) * self.lambd
-
-
-		wq = 0
-		for request in simulation.served_requests:
-			wq += request.wq
-		# for request in simulation.queue.blocked_requests:
-		# 	wq += request.wq
-		# self.W_queue += wq / (len(simulation.served_requests) + len(simulation.queue.blocked_requests))
-		# self.Q += (wq / (len(simulation.served_requests) + len(simulation.queue.blocked_requests))) * self.lambd
-
-		self.W_queue += wq / (len(simulation.served_requests) ) #+ len(simulation.queue.blocked_requests))
-		self.Q += (wq / (len(simulation.served_requests) + len(simulation.queue.blocked_requests))) * self.lambd
+		self.W_queue += temp_served_wq / temp_served;
+		self.Q += (temp_served_wq / (temp_served + temp_blocked)) * self.lambd
 
 		for state in States.get_States_list(States):
 			self.state_time[state] += simulation.state_time[state]

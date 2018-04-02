@@ -38,6 +38,29 @@ class ConfigParser:
             return DTO(filename, path_to_file, column_names, sections)
         return None
 
+    def parse_config(self, name):
+        manager = FileManager()
+
+        filename =name
+        path_to_file = manager.get_path_to_file(DirPath.CONFIGS)
+
+        config = configparser.ConfigParser()
+
+        if filename is not None:
+            with open(os.path.join(path_to_file, filename)) as cfg_file:
+                config.readfp(cfg_file)  # read and parse entire file
+
+            sections = {}
+            for section in config.sections():
+                options = {}
+                for option, value in config.items(section):
+                    options[option] = value
+                sections[section] = options
+
+            column_names = self.get_column_names(sections)
+            return DTO(filename, path_to_file, column_names, sections)
+        return None
+
     '''
         Get column names by sections from parsed .config file
     '''

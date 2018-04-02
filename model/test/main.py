@@ -54,10 +54,10 @@ def main():
 			simulation = Simulation("m/m/c[c0]/r[l,h]", lambd, mu, theta, C, c0, L, H, simulation_time, Q, is_debug)
 			simulation.start()
 			blocked += simulation.queue.blocked
-			served += len(simulation.served_requests)
+			served += simulation.served_count
 			generated += simulation.flow.generated_count
-			B += simulation.queue.blocked/(len(simulation.served_requests)+simulation.queue.blocked)
-			N += len(simulation.served_requests)/simulation_time
+			B += simulation.queue.blocked/(simulation.served_count+simulation.queue.blocked)
+			N += simulation.served_count/simulation_time
 		end_time = time.time()
 
 		blocked = blocked/repeats

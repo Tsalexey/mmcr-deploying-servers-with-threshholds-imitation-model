@@ -34,8 +34,11 @@ class Simulation:
 		self.system_state = States.IDLE
 		self.prev_system_state = States.IDLE
 
+		self.served_count = 0;
+		self.served_sum_w = 0;
+		self.served_sum_wq = 0;
+
 		self.servers = []
-		self.served_requests = []
 		self.generated_requests = []
 
 		self.time = 0
@@ -285,11 +288,15 @@ class Simulation:
 		for server in servers_to_turn_off:
 			if server.departure_time == self.time and server.is_busy and server.is_deployed and server.to_be_turned_off:
 				served_request = self.servers[server.ID].unload_and_undeploy()
-				self.served_requests.append(served_request)
+				self.served_count += 1;
+				self.served_sum_w += served_request.w;
+				self.served_sum_wq += served_request.wq;
 		for server in self.servers:
 			if server.departure_time == self.time and server.is_busy and server.is_deployed and not server.to_be_turned_off:
 				served_request = self.servers[server.ID].unload()
-				self.served_requests.append(served_request)				
+				self.served_count += 1;
+				self.served_sum_w += served_request.w;
+				self.served_sum_wq += served_request.wq;
 
 	def handle_idle(self):
 		for server in self.servers:
@@ -317,7 +324,9 @@ class Simulation:
 		for server in self.servers:
 			if server.departure_time == self.time and server.is_busy and server.is_deployed:
 				served_request = self.servers[server.ID].unload()
-				self.served_requests.append(served_request)
+				self.served_count += 1;
+				self.served_sum_w += served_request.w;
+				self.served_sum_wq += served_request.wq;
 
 	def handle_request(self):
 		# time = new request arrive, handle request
@@ -328,8 +337,9 @@ class Simulation:
 			else:
 				self.queue.push(self.generated_request)
 			self.pop_generated_request(first_generated_request)
-			self.generated_request = self.flow.generate()
-			self.generated_requests.append(self.generated_request)
+			if (len(self.generated_requests) < 2*self.servers_count):
+				self.generated_request = self.flow.generate()
+				self.generated_requests.append(self.generated_request)
 						
 	def handle_queue(self):
 		# handle queue at current time
@@ -364,7 +374,7 @@ class Simulation:
 		self.generated_request = self.flow.generate()
 		self.generated_requests.append(self.generated_request)
 
-		while len(self.served_requests) < requestsToServe:
+		while self.served_count < requestsToServe:
 			self.run()
 		if self.is_debug:
 			print("Simulation ended")
@@ -398,7 +408,7 @@ class Simulation:
 				  " free = ", self.get_free_deployed_servers_count(), "/", self.get_deployed_servers_count(), ",",
 				  "C = ", self.servers_count, ",",
 				  " generated = ", self.flow.generated_count, ",",
-				  " served =", len(self.served_requests))
+				  " served =", self.served_count)
 
 			# for server in self.servers:
 			# 	server.get_info()

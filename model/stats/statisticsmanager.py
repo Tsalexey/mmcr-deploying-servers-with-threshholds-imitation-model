@@ -22,6 +22,14 @@ class StatisticsManager:
         self.mode = "m/m/c[c0]/r[l,h]" #"m/m/c[c0]/r" #"m/m/c[c0]/r[l,h]"
         self.strategy = "request"
 
+    def __init__(self, parameters, mode, strategy):
+        self.parameters = parameters
+        self.simulation_time = self.parameters[PARAM.TIME].start_value
+        self.range_dict = self.create_range_dict()
+        self.is_debug = False
+        self.mode = mode #"m/m/c[c0]/r" #"m/m/c[c0]/r[l,h]"
+        self.strategy = strategy # "request" "time"
+
     def generate_statistics(self):
         generated_values = []
 
