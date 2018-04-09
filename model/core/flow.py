@@ -1,7 +1,7 @@
 __author__ = 'tsarev alexey'
 
 import random
-
+from numpy import random as rng
 from core.request import Request
 
 
@@ -25,8 +25,10 @@ class Flow:
 			Generate new request arrival
 		"""
 		if self.is_debug: print("		generated new request")
-		alpha = random.expovariate(self.lambd)
-		beta = random.expovariate(self.mu)
+		alpha = rng.exponential(scale=1 / self.lambd)
+		beta = rng.exponential(scale=1 / self.mu)
+		# alpha = random.expovariate(self.lambd)
+		# beta = random.expovariate(self.mu)
 		self.next_arrival_time += alpha
 		self.request_id += 1
 		self.generated_count += 1

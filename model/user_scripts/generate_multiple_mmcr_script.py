@@ -7,50 +7,16 @@ from utils.csvmanager import CSVManager
 from utils.parametersparser import ParametersParser
 
 def main():
-    names2 = [
-        # "#1_(4)_1",
-        # "#1_(4)_2",
-        # "#1_(4)_3",
-        "#1_(4)_5",
-        "#1_(4)_6",
-        "#1_(4)_7",
-        "#1_(4)_8",
-        "#1_(4)_4",
+    names = [
+        "#2_1",
+        "#2_2",
+        "#2_3"
     ];
 
-    # names = [
-    #     "#1_1",
-    #     "#1_2",
-    #     "#1_3",
-    #     "#2_1",
-    #     "#2_2",
-    #     "#2_3",
-    #     "#3_1",
-    #     "#3_2",
-    #     "#3_3",
-    #     "#4_1",
-    #     "#4_2",
-    #     "#4_3",
-    #     "#5_1",
-    #     "#5_2",
-    #     "#5_3",
-    # ];
-    #
-    # names2 = [
-    #     "#1_(4)",
-    #     "#2_(4)",
-    #     "#3_(4)",
-    #     "#3_(5)",
-    #     "#3_(6)",
-    #     "#4_(4)",
-    #     "#4_(5)",
-    #     "#4_(6)",
-    #     "#5_(4)",
-    #     "#5_(5)",
-    #     "#5_(6)"
-    # ];
-
-    # generate(names, "m/m/c[c0]/r[l,h]", "requests");
+    names2 = [
+        "#2_(4)"
+    ];
+    generate(names, "m/m/c[c0]/r[l,h]", "requests");
     generate(names2, "m/m/c[c0]/r", "requests");
 
 def generate(names, mode, strategy):

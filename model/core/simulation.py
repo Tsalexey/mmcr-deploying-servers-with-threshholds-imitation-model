@@ -374,8 +374,16 @@ class Simulation:
 		self.generated_request = self.flow.generate()
 		self.generated_requests.append(self.generated_request)
 
-		while self.served_count < requestsToServe:
+		heating = 250000
+		is_heated = False
+		while self.served_count < requestsToServe + heating:
 			self.run()
+			if self.served_count == heating and is_heated is False:
+				is_heated = True
+				self.queue.blocked = 0;
+				self.served_count = 0;
+				self.served_sum_w = 0;
+				self.served_sum_wq = 0;
 		if self.is_debug:
 			print("Simulation ended")
 
