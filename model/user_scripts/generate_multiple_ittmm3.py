@@ -8,38 +8,11 @@ from utils.parametersparser import ParametersParser
 
 def main():
     names = [
-        "ittmm1_1",
-        "ittmm1_2",
-        "ittmm1_3",
-        "ittmm2_1",
         "ittmm2_2",
-        "ittmm2_3",
-        "ittmm3_1",
-        "ittmm3_2",
-        "ittmm3_3",
-        "ittmm4_1",
-        "ittmm4_2",
-        "ittmm4_3",
-        "ittmm5_1",
-        "ittmm5_2",
-        "ittmm5_3"
+        "ittmm2_3"
     ];
 
-    names2 = [
-        "ittmm1_4",
-        "ittmm2_4",
-        "ittmm3_4",
-        "ittmm3_5",
-        "ittmm3_6",
-        "ittmm4_4",
-        "ittmm4_5",
-        "ittmm4_6",
-        "ittmm5_4",
-        "ittmm5_5",
-        "ittmm5_6"
-    ];
     generate(names, "m/m/c[c0]/r[l,h]", "requests");
-    generate(names2, "m/m/c[c0]/r", "requests");
 
 def generate(names, mode, strategy):
     parser = ParametersParser()
