@@ -117,12 +117,7 @@ class StatisticsManager:
 
         path_to_file = manager.get_path_to_file(DirPath.STATISTICS)
 
-        filename = "Statistics for " + config.filename + " #"
-        i = 1
-        while manager.is_file_exists(path_to_file, filename + str(i)):
-            i += 1
-
-        filename += str(i)
+        filename = "Statistics for " + config.filename
 
         data = self.transform_generated_values(config.column_names, generated_stat)
 
