@@ -14,21 +14,13 @@ from stats.generated_values_storage import Generated_values_storage
 
 class StatisticsManager:
 
-    def __init__(self, parameters):
-        self.parameters = parameters
-        self.simulation_time = self.parameters[PARAM.TIME].start_value
-        self.range_dict = self.create_range_dict()
-        self.is_debug = False
-        self.mode = "m/m/c[c0]/r[l,h]" #"m/m/c[c0]/r" #"m/m/c[c0]/r[l,h]"
-        self.strategy = "request"
-
-    def __init__(self, parameters, mode, strategy):
+    def __init__(self, parameters, mode="m/m/c[c0]/r[l,h]", strategy="request"):
         self.parameters = parameters
         self.simulation_time = self.parameters[PARAM.TIME].start_value
         self.range_dict = self.create_range_dict()
         self.is_debug = False
         self.mode = mode #"m/m/c[c0]/r" #"m/m/c[c0]/r[l,h]"
-        self.strategy = strategy # "request" "time"
+        self.strategy = strategy
 
     def generate_statistics(self):
         generated_values = []

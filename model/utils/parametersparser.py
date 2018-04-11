@@ -9,11 +9,11 @@ class ParametersParser:
     '''
         Parse Parameters section from .config file
     '''
-    def parse_parameters(self):
+    def parse_parameters_from_input(self):
         parser = ConfigParser()
         validator = ParametersValidator()
 
-        config_dto = parser.parse_config()
+        config_dto = parser.parse_config_from_input()
         params_dict = self.get_parameters(config_dto.data)
 
         if validator.validate(params_dict):

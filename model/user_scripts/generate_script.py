@@ -8,7 +8,7 @@ from utils.parametersparser import ParametersParser
 
 def main():
     parser = ParametersParser()
-    [parameters, config] = parser.parse_parameters()
+    [parameters, config] = parser.parse_parameters_from_input()
 
     stat_manager = StatisticsManager(parameters)
     generated_stat = stat_manager.generate_statistics()

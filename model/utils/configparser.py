@@ -15,7 +15,7 @@ class ConfigParser:
     '''
         Select and read config from ../config
     '''
-    def parse_config(self):
+    def parse_config_from_input(self):
         manager = FileManager()
 
         filename = manager.select_file(DirPath.CONFIGS, FileType.CONFIG)
