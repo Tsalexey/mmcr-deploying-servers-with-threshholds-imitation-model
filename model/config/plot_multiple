@@ -1,0 +1,52 @@
+#B;N;W system;Q;W queue;IDLE time;TURN OFF time;TURN UP time;FULL time;IDLE count;TURN OFF count;TURN UP count;FULL count;up-down mean time;up-down count
+
+#1
+f1_1 = 'Statistics for test.config.csv'
+f1_2 = 'Statistics for test2.config.csv'
+
+#1
+cond_f1_1 = ', m/m/c[c0]/r[l,h]'
+cond_f1_2 = ', m/m/c[0]/r'
+
+output_filename = 'compare_test'
+
+B = 'B'
+Q = 'Q'
+Wq = 'W queue'
+
+set size square
+set grid
+set key outside right
+set terminal pdf
+set output output_filename.'.pdf'
+set pointsize 0.3
+
+# point styles
+set style line 1 lc rgb 'green' pt 7 # circle
+set style line 2 lc rgb 'blue' pt 7 # circle
+set style line 3 lc rgb 'orange' pt 7 # circle
+set style line 4 lc rgb 'red' pt 7 # circle
+set style line 5 lc rgb 'black' pt 7 # circle
+
+# line styles
+set style line 101 lc rgb 'green'
+set style line 102 lc rgb 'blue'
+set style line 103 lc rgb 'orange'
+set style line 104 lc rgb 'red'
+set style line 105 lc rgb 'black'
+
+#1
+#B
+plot f1_1 u 2:12 w l ls 101 s mcsplines t B.cond_f1_1, f1_1 u 2:12 w p ls 1 t '',\
+f1_2 u 2:12 w l ls 102 s mcsplines t B.cond_f1_2, f1_2 u 2:12 w p ls 2 t ''
+
+# Q
+plot f1_1 u 2:15 w l ls 101 s mcsplines t Q.cond_f1_1, f1_1 u 2:15 w p ls 1 t '',\
+f1_2 u 2:15 w l ls 102 s mcsplines t Q.cond_f1_2, f1_2 u 2:15 w p ls 2 t ''
+
+# W
+plot f1_1 u 2:16 w l ls 101 s mcsplines t Wq.cond_f1_1, f1_1 u 2:16 w p ls 1 t '',\
+f1_2 u 2:16 w l ls 102 s mcsplines t Wq.cond_f1_2, f1_2 u 2:16 w p ls 2 t ''
+
+set output "delete_me.pdf"
+
